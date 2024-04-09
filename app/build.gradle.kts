@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.viewmodel)
     implementation(libs.livedata)
     implementation(libs.constraintlayoutCompose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)
 

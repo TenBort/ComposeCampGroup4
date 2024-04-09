@@ -1,4 +1,4 @@
-package com.example.composecampgroup4.ui.theme
+package com.example.composecampgroup4.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

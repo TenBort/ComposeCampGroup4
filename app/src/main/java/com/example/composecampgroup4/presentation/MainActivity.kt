@@ -1,4 +1,4 @@
-package com.example.composecampgroup4
+package com.example.composecampgroup4.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.composecampgroup4.ui.theme.ComposeCampGroup4Theme
+import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

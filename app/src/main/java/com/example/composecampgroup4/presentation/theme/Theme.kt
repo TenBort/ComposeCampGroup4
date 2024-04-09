@@ -1,4 +1,4 @@
-package com.example.composecampgroup4.ui.theme
+package com.example.composecampgroup4.presentation.theme
 
 import android.app.Activity
 import android.os.Build
