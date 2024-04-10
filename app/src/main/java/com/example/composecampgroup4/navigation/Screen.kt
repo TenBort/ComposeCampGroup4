@@ -1,16 +1,10 @@
 package com.example.composecampgroup4.navigation
 
-import com.example.composecampgroup4.core.utils.Constants
-
 sealed class Screen(val route: String) {
 
     data object Home : Screen(ROUTE_HOME)
     data object AddJar : Screen(ROUTE_ADD_JAR)
-    data object Details : Screen(ROUTE_DETAILS) {
-        fun test() {
-            println("sdfs${Constants.APP_ID}")
-        }
-    }
+    data object Details : Screen(ROUTE_DETAILS)
 
     companion object {
         private const val ROUTE_HOME = "home_screen"
