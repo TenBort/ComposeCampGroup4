@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -40,7 +41,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.5"
     }
     packaging {
         resources {
@@ -77,4 +78,19 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Compose Navigation
+    implementation (libs.androidx.navigation.compose)
+
+    // Room components
+    implementation(libs.room.runtime)
+    implementation(libs.room.core)
+    ksp(libs.room.compiler)
+
+    // Retrofit
+    implementation(libs.retorfit.core)
+    implementation(libs.retorfit.gsonConverter)
+
+    // Coil
+    implementation(libs.coil)
 }
