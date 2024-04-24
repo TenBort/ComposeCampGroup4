@@ -9,7 +9,7 @@ import com.example.composecampgroup4.presentation.screens.details.screen_handlin
 import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
 
 @Composable
-fun DetailsScreenRoot() {
+fun DetailsScreenRoot(jarId: Int) {
     val viewModel: DetailsViewModel = viewModel()
 
     BaseContentLayout(

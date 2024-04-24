@@ -1,7 +1,9 @@
 package com.example.composecampgroup4.presentation.core.base
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,15 +43,18 @@ fun <S : UiState, E : UiEvent, A : ActionEvent> BaseContentLayout(
     containerColor: Color = MaterialTheme.colorScheme.background,
     contentColor: Color = contentColorFor(containerColor),
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
-    actionsEventHandler: (suspend CoroutineScope.() -> Unit)? = null,
-    content: @Composable (uiState: S) -> Unit
+    actionsEventHandler: (suspend CoroutineScope.(context: Context) -> Unit)? = null,
+    content: @Composable (BoxScope.(uiState: S) -> Unit)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = lifecycle) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            actionsEventHandler?.let { it() }
+        if (actionsEventHandler != null) {
+            lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                actionsEventHandler(context)
+            }
         }
     }
 
