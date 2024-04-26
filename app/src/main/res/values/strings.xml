@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Compose Camp Group 4</string>
+    <string name="the_request_timed_out">Час очікування запиту минув</string>
+    <string name="youve_hit_your_rate_limit">Ви досягли свого ліміту запитів на сервер</string>
+    <string name="no_internet">Не вдалося підключитися до сервера. Перевірте підключення до Інтернету</string>
+    <string name="server_error">Щось пішло не так. Будь ласка спробуйте ще раз.</string>
+    <string name="unknown_error">Сталася невідома помилка</string>
+    <string name="wrong_id_error">Збір не знайдений. Перевірте, будь ласка, ваше посилання</string>
 </resources>
