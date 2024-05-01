@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class JarDto(
     @SerializedName("jarId") val jarId: String,
-    @SerializedName("amount") val amount: Int,
-    @SerializedName("goal") val goal: Int,
+    @SerializedName("amount") val amount: Long,
+    @SerializedName("goal") val goal: Long,
     @SerializedName("ownerIcon") val ownerIcon: String,
     @SerializedName("title") val title: String,
     @SerializedName("currency") val currency: Int,

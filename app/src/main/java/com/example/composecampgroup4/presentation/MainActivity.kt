@@ -9,20 +9,23 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import com.example.composecampgroup4.navigation.RootAppNavigation
+import com.example.composecampgroup4.navigation.rememberNavigationState
 import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupFullScreen()
         setContent {
             ComposeCampGroup4Theme {
-                // A surface container using the 'background' color from the theme
+                val navigationState = rememberNavigationState()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RootAppNavigation()
+                    RootAppNavigation(navigationState)
                 }
             }
         }

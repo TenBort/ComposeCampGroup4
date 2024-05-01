@@ -2,4 +2,7 @@ package com.example.composecampgroup4.presentation.screens.add_jar.screen_handli
 
 import com.example.composecampgroup4.presentation.core.base.common.UiState
 
-data class AddJarUiState(val initial: String = "") : UiState
+data class AddJarUiState(
+    val link: String = "",
+    val comment: String = "",
+) : UiState

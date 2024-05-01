@@ -3,13 +3,14 @@ package com.example.composecampgroup4.presentation.screens.details
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.composecampgroup4.navigation.NavigationState
 import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiEvent
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiState
 import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
 
 @Composable
-fun DetailsScreenRoot(jarId: Int) {
+fun DetailsScreenRoot(navigationState: NavigationState, jarId: Int) {
     val viewModel: DetailsViewModel = viewModel()
 
     BaseContentLayout(

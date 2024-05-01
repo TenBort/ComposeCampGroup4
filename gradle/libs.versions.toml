@@ -16,6 +16,8 @@ navigation-compose = "2.7.7"
 room = "2.6.1"
 retrofit = "2.9.0"
 coil = "2.6.0"
+dagger = "2.51.1"
+hilt = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,9 +54,14 @@ retorfit-gsonConverter = { group = "com.squareup.retrofit2", name = "converter-g
 
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 
+androidx-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt" }
+dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger"}
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger"}
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 

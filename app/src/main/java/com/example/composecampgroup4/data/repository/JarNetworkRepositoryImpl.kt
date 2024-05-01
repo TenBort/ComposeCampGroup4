@@ -1,6 +1,7 @@
 package com.example.composecampgroup4.data.repository
 
 import com.example.composecampgroup4.data.mapper.toEntity
+import com.example.composecampgroup4.data.network.api.ApiFactory
 import com.example.composecampgroup4.data.network.api.ApiService
 import com.example.composecampgroup4.data.network.api.HandlerApiService
 import com.example.composecampgroup4.data.network.api.HandlerRequestData
@@ -9,15 +10,16 @@ import com.example.composecampgroup4.domain.entity.Result
 import com.example.composecampgroup4.domain.entity.errors.JarDataError
 import com.example.composecampgroup4.domain.repository.JarNetworkRepository
 import java.io.IOException
+import javax.inject.Inject
 
-class JarNetworkRepositoryImpl(
-    private val handlerApiService: HandlerApiService,
-    private val apiService: ApiService
+class JarNetworkRepositoryImpl @Inject constructor(
+    private val apiFactory: ApiFactory
 ) : JarNetworkRepository {
+
     override suspend fun loadJarData(jarId: String): Result<Jar, JarDataError> {
         return try {
-            val (longJarId, ownerName) = handlerApiService.postData(HandlerRequestData(clientId = jarId))
-            val jar = apiService.getJarData(longJarId).toEntity(ownerName, longJarId)
+            val (longJarId, ownerName) = apiFactory.handlerApiService.postData(HandlerRequestData(clientId = jarId))
+            val jar = apiFactory.apiService.getJarData(longJarId).toEntity(ownerName, longJarId)
             Result.Success(jar)
         } catch (e: retrofit2.HttpException) {
             when(e.code()) {
