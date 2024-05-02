@@ -5,4 +5,5 @@ import com.example.composecampgroup4.presentation.core.base.common.UiState
 data class AddJarUiState(
     val link: String = "",
     val comment: String = "",
+    val isLoading: Boolean = false
 ) : UiState

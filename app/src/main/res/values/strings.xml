@@ -6,9 +6,12 @@
     <string name="server_error">Щось пішло не так. Будь ласка спробуйте ще раз.</string>
     <string name="unknown_error">Сталася невідома помилка</string>
     <string name="wrong_id_error">Збір не знайдений. Перевірте, будь ласка, ваше посилання</string>
+    <string name="empty_link_error">Додайте, будь ласка, посилання на збір</string>
     <string name="add_new_jar">Додати новий збір</string>
     <string name="link_to_jar">Посилання на збір</string>
     <string name="your_comment">Ваш коментар</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
+    <string name="wait_adding_collection">Зачекайте, додаємо збір до вашого списку</string>
+    <string name="collection_successfully_added">Збір успішно доданий</string>
 </resources>

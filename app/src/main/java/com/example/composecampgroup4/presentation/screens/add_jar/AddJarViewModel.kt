@@ -43,9 +43,13 @@ class AddJarViewModel @Inject constructor(
     }
 
     private fun upsertJar(jarId: String) {
+        updateLoadingState(true)
         launch {
             when (val result = jarNetworkRepository.loadJarData(jarId)) {
-                is Result.Error -> sendErrorMessage(result.error.asUiText())
+                is Result.Error -> {
+                    updateLoadingState(false)
+                    sendErrorMessage(result.error.asUiText())
+                }
                 is Result.Success -> {
                     jarDatabaseRepository.upsertJar(result.data)
                     sendActionEvent(AddJarActionEvent.NavigateBack)
@@ -57,6 +61,8 @@ class AddJarViewModel @Inject constructor(
     private fun updateLink(link: String) = updateState { it.copy(link = link) }
 
     private fun updateComment(comment: String) = updateState { it.copy(comment = comment) }
+
+    private fun updateLoadingState(isLoading: Boolean) = updateState { it.copy(isLoading = isLoading) }
 
     private fun sendErrorMessage(errorMessage: UiText) {
         sendActionEvent(AddJarActionEvent.Error(errorMessage))
