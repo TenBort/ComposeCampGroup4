@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -28,6 +30,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("profile") {
+            initWith(getByName("debug"))
+            isDebuggable = false
+            isProfileable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -40,7 +47,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.5"
     }
     packaging {
         resources {
@@ -66,6 +73,7 @@ dependencies {
     implementation(libs.androidx.viewmodel)
     implementation(libs.livedata)
     implementation(libs.constraintlayoutCompose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)
 
@@ -76,4 +84,24 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Compose Navigation
+    implementation (libs.androidx.navigation.compose)
+
+    // Room components
+    implementation(libs.room.runtime)
+    implementation(libs.room.core)
+    ksp(libs.room.compiler)
+
+    // Retrofit
+    implementation(libs.retorfit.core)
+    implementation(libs.retorfit.gsonConverter)
+
+    // Coil
+    implementation(libs.coil)
+
+    // Dagger Hilt
+    implementation(libs.dagger.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation)
 }

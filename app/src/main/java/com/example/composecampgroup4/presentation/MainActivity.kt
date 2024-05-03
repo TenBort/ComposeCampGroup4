@@ -1,4 +1,4 @@
-package com.example.composecampgroup4
+package com.example.composecampgroup4.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,41 +6,32 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.composecampgroup4.ui.theme.ComposeCampGroup4Theme
+import androidx.core.view.WindowCompat
+import com.example.composecampgroup4.navigation.RootAppNavigation
+import com.example.composecampgroup4.navigation.rememberNavigationState
+import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupFullScreen()
         setContent {
             ComposeCampGroup4Theme {
-                // A surface container using the 'background' color from the theme
+                val navigationState = rememberNavigationState()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    RootAppNavigation(navigationState)
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ComposeCampGroup4Theme {
-        Greeting("Android")
+    private fun setupFullScreen() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 }
