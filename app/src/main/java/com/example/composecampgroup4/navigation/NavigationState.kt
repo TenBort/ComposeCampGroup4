@@ -17,6 +17,10 @@ class NavigationState (
     fun popBackStack() {
         navHostController.popBackStack()
     }
+
+    fun navigateToDetails(jarId: String) {
+        navHostController.navigate("${Screen.Details.route}/$jarId")
+    }
 }
 
 @Composable

@@ -11,7 +11,7 @@ fun NavGraphBuilder.detailsRoute(navigationState: NavigationState) {
         route = Screen.Details.routeWithArgs,
         arguments = Screen.Details.arguments
     ) { navBackStackEntry ->
-        val jarId = navBackStackEntry.arguments?.getInt(Screen.Details.JAR_ID_ARG) ?: -1
+        val jarId = navBackStackEntry.arguments?.getString(Screen.Details.JAR_ID_ARG) ?: ""
         DetailsScreenRoot(navigationState, jarId)
     }
 }
