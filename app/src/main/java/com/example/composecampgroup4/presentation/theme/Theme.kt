@@ -98,10 +98,11 @@ fun ComposeCampGroup4Theme(
         else -> LightColorScheme
     }
     val view = LocalView.current
+    val statusBarColor = colorScheme.background.toArgb()
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = Color.Transparent.toArgb()
+            window.statusBarColor = statusBarColor
             window.navigationBarColor = Color.Transparent.toArgb()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

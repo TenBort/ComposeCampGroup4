@@ -14,4 +14,7 @@
     <string name="go_back">Повернутися назад</string>
     <string name="wait_adding_collection">Зачекайте, додаємо збір до вашого списку</string>
     <string name="collection_successfully_added">Збір успішно доданий</string>
+    <string name="jar_link">https://send.monobank.ua/jar/%1$s</string>
+    <string name="jar_details">Деталі збору</string>
+    <string name="copy_jar_link">Копіювати посилання на збір</string>
 </resources>

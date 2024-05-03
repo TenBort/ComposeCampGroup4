@@ -11,7 +11,7 @@ sealed class Screen(val route: String) {
         const val JAR_ID_ARG = "jar_id"
         val routeWithArgs = "${route}/{${JAR_ID_ARG}}"
         val arguments = listOf(
-            navArgument(JAR_ID_ARG) { type = NavType.IntType }
+            navArgument(JAR_ID_ARG) { type = NavType.StringType }
         )
     }
 
