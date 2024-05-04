@@ -17,4 +17,11 @@
     <string name="jar_link">https://send.monobank.ua/jar/%1$s</string>
     <string name="jar_details">Деталі збору</string>
     <string name="copy_jar_link">Копіювати посилання на збір</string>
+
+    <string name="jar_active">Активний</string>
+    <string name="jar_no_goal">Без цілі</string>
+    <string name="jar_closed">Завершений</string>
+    <string name="jar_accumulated">Накопичено</string>
+    <string name="jar_goal">Ціль</string>
+
 </resources>
