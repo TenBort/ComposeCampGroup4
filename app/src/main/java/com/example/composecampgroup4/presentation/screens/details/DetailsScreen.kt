@@ -2,6 +2,7 @@ package com.example.composecampgroup4.presentation.screens.details
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -277,7 +278,8 @@ private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) 
         ) {
             Box(
                 modifier = modifier
-                    .fillMaxWidth().height(44.dp)
+                    .fillMaxWidth()
+                    .height(44.dp)
             ) {
                 Row(
                     modifier = modifier
@@ -292,14 +294,14 @@ private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) 
                         currency = uiState.jar.currency
                     )
                     if (uiState.jar.goal > 0) {
-                        Spacer(modifier = Modifier.width(if(uiState.jar.goal < 100000000000)20.dp else 16.dp ))
+                        Spacer(modifier = Modifier.width(if (uiState.jar.goal < 100000000000) 20.dp else 16.dp))
                         VerticalDivider(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(1.dp),
                             color = MaterialTheme.colorScheme.outline
                         )
-                        Spacer(modifier = Modifier.width(if(uiState.jar.goal < 100000000000)20.dp else 16.dp ))
+                        Spacer(modifier = Modifier.width(if (uiState.jar.goal < 100000000000) 20.dp else 16.dp))
                         JarCashBox(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),
                             title = stringResource(id = R.string.jar_goal),
@@ -384,6 +386,13 @@ private fun Comment(modifier: Modifier = Modifier, uiState: DetailsUiState) {
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.outline
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.jar_comment_edit),
+                fontSize = 12.sp,
+                color = if (uiState.jar.closed) MaterialTheme.colorScheme.outline
+                else MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable { })
         }
 
 

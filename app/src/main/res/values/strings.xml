@@ -23,5 +23,5 @@
     <string name="jar_closed">Завершений</string>
     <string name="jar_accumulated">Накопичено</string>
     <string name="jar_goal">Ціль</string>
-
+    <string name="jar_comment_edit">Редагувати</string>
 </resources>
