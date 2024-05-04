@@ -277,7 +277,7 @@ private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) 
         ) {
             Box(
                 modifier = modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().height(44.dp)
             ) {
                 Row(
                     modifier = modifier
@@ -292,14 +292,14 @@ private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) 
                         currency = uiState.jar.currency
                     )
                     if (uiState.jar.goal > 0) {
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Spacer(modifier = Modifier.width(if(uiState.jar.goal < 100000000000)20.dp else 16.dp ))
                         VerticalDivider(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(1.dp),
                             color = MaterialTheme.colorScheme.outline
                         )
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Spacer(modifier = Modifier.width(if(uiState.jar.goal < 100000000000)20.dp else 16.dp ))
                         JarCashBox(
                             painter = painterResource(id = R.drawable.ic_launcher_foreground),
                             title = stringResource(id = R.string.jar_goal),
@@ -407,7 +407,7 @@ private fun DetailsScreenPreview() {
                     jarId = "123",
                     longJarId = "1234567890",
                     amount = 58935366131,
-                    goal = 0,
+                    goal = 100000000000,
                     ownerIcon = "https://example.com/icon.png",
                     title = "Благодійний фонд Сергія Притули",
                     ownerName = "Благодійний фонд Сергія Притули, БО",
