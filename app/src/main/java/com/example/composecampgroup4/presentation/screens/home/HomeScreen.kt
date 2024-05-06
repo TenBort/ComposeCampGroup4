@@ -84,7 +84,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit
 ) {
-    if (uiState.jarList.isEmpty() && !uiState.isSearching) {
+    if (uiState.jars.isEmpty() && !uiState.isSearching) {
         EmptyHomeScreen(isSearching = false)
     } else {
         Column(modifier = modifier) {
@@ -99,10 +99,10 @@ fun HomeScreen(
                     )
                 }
 
-                items(items = uiState.jarList, key = { it.jarId }) { jar ->
+                items(items = uiState.jars, key = { it.jarId }) { jar ->
 
                     // If the search does not find anything, it displays an empty screen with a message that no jars were found
-                    if (uiState.jarList.isEmpty() && uiState.isSearching) {
+                    if (uiState.jars.isEmpty() && uiState.isSearching) {
                         EmptyHomeScreen(isSearching = true)
                     } else {
 

@@ -82,7 +82,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun jarsLoadResult(): List<Result<Jar, JarDataError>> {
         val jarsDeferred = mutableListOf<Deferred<Result<Jar, JarDataError>>>()
 
-        currentState.jarList.forEach { jar ->
+        currentState.jars.forEach { jar ->
             val resultDeferred = viewModelScope.async {
                 jarNetworkRepository.loadJarData(longJarId = jar.longJarId, ownerName = jar.ownerName)
             }
@@ -106,7 +106,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun updateJarList(jarList: List<Jar>) = updateState { it.copy(jarList = jarList) }
+    private fun updateJarList(jarList: List<Jar>) = updateState { it.copy(jars = jarList) }
 
     private fun updateSearchRequest(searchRequest: String) {
         updateSearchState(searchRequest.isNotBlank())
