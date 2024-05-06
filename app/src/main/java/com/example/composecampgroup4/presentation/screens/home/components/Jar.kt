@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -39,30 +41,30 @@ import com.example.composecampgroup4.presentation.core.components.OwnerJarImage
 fun Jar(
     jar: Jar,
     modifier: Modifier = Modifier,
-    onCopyClick: () -> Unit,
+    onCopyClick: (String) -> Unit,
     onFavoriteClick: (Jar) -> Unit,
     onDonateClick: (Jar) -> Unit
 ) {
-    val savedAmount by remember {
-        mutableLongStateOf(jar.amount)
-    }
-    val savedGoal by remember {
-        mutableLongStateOf(jar.goal)
-    }
-    val percentage = if (savedGoal == 0L) {
+    val percentage = if (jar.goal == 0L) {
         1f
     } else {
-        savedAmount / savedGoal.toFloat()
+        jar.amount / jar.goal.toFloat()
     }
 
-
-
-    Column(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
         JarInfo(jar = jar, Modifier.fillMaxWidth(), onFavoriteClick, onCopyClick)
 
-        JarProgressBar(percentage, jar.closed)
+        JarProgressBar(percentage, modifier.fillMaxWidth(), jar.closed)
 
-        ExpandableSection(modifier = Modifier.fillMaxWidth(), isClosed = jar.closed) {
+        ExpandableSection(
+            modifier = Modifier.fillMaxWidth(),
+            isClosed = jar.closed,
+            isExpended = jar.isExpanded
+        ) {
             ExpendedJarContent(jar, Modifier, onDonateClick)
         }
     }
@@ -70,30 +72,29 @@ fun Jar(
 
 @Composable
 fun JarInfo(
-    jar: Jar, modifier: Modifier = Modifier, onFavoriteClick: (Jar) -> Unit, onCopyClick: () -> Unit
+    jar: Jar, modifier: Modifier = Modifier, onFavoriteClick: (Jar) -> Unit, onCopyClick: (String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isClosed = jar.closed
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(
-                MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(16.dp, 16.dp, 0.dp, 0.dp)
-            ), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
     ) {
 
         OwnerJarImage(
             modifier = Modifier
-                .padding(start = 24.dp, top = 24.dp)
+                .padding(start = 16.dp, top = 16.dp)
                 .size(70.dp)
-                .align(Alignment.CenterVertically), imageUri = Uri.parse(jar.ownerIcon)
+                .align(Alignment.CenterVertically),
+            imageUri = Uri.parse(jar.ownerIcon)
         )
 
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 10.dp, top = 24.dp),
+                .padding(start = 12.dp, top = 16.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -115,12 +116,18 @@ fun JarInfo(
 
             Row(Modifier.padding(top = 16.dp)) {
                 Text(
-                    text = if (jar.closed) stringResource(id = R.string.jar_closed) else stringResource(
+                    text = if (isClosed) stringResource(id = R.string.jar_closed) else stringResource(
                         id = R.string.jar_active
                     ),
+                    color = if (isClosed) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .background(
-                            MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(16.dp)
+                            if (isClosed) {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            } else {
+                                MaterialTheme.colorScheme.onPrimary
+                            },
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
@@ -129,7 +136,7 @@ fun JarInfo(
                     Text(
                         text = stringResource(id = R.string.jar_no_goal),
                         modifier = Modifier
-                            .padding(start = 10.dp)
+                            .padding(start = 12.dp)
                             .background(
                                 MaterialTheme.colorScheme.onPrimary,
                                 shape = RoundedCornerShape(16.dp)
@@ -142,7 +149,7 @@ fun JarInfo(
         }
 
         Column(
-            Modifier.padding(top = 24.dp, end = 24.dp),
+            Modifier.padding(top = 16.dp, end = 16.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.End
         ) {
@@ -167,8 +174,7 @@ fun JarInfo(
                     .clickable(
                         interactionSource = interactionSource, indication = null
                     ) {
-                        //TODO what we need to do on click ?
-                        onCopyClick.invoke()
+                        onCopyClick.invoke(jar.jarId)
                     }
                     .padding(top = 4.dp)
                     .size(20.dp),
@@ -218,15 +224,19 @@ fun ExpendedJarContent(
 
         RoundedButton(
             text = stringResource(id = R.string.jar_donate),
+            isEnabled = !jar.closed,
             onClick = { onDonateClick.invoke(jar) })
     }
 }
 
 @Composable
 fun ExpandableSection(
-    modifier: Modifier = Modifier, isClosed: Boolean, content: @Composable () -> Unit
+    modifier: Modifier = Modifier,
+    isClosed: Boolean,
+    isExpended: Boolean = false,
+    content: @Composable () -> Unit
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(isExpended) }
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
@@ -234,26 +244,18 @@ fun ExpandableSection(
             .clickable(interactionSource = interactionSource, indication = null) {
                 isExpanded = !isExpanded
             }
-            .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(0.dp, 0.dp, 16.dp, 16.dp)
-            )
             .fillMaxWidth(),
     ) {
         Text(
             text = if (isExpanded) stringResource(id = R.string.hide_details) else stringResource(id = R.string.show_details),
-            modifier = Modifier.padding(vertical = 24.dp, horizontal = 24.dp),
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             fontSize = 12.sp,
             color = if (isClosed) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.outline
         )
 
         AnimatedVisibility(
-            modifier = Modifier
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(0.dp, 0.dp, 16.dp, 16.dp)
-                )
-                .fillMaxWidth(), visible = isExpanded
+            modifier = Modifier.fillMaxWidth(),
+            visible = isExpanded
         ) {
             content()
         }
@@ -298,14 +300,18 @@ fun MoneyJarText(
 
 @Composable
 fun RoundedButton(
-    text: String, onClick: () -> Unit, modifier: Modifier = Modifier
+    text: String,
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 24.dp, horizontal = 24.dp),
+            .padding(vertical = 16.dp, horizontal = 16.dp),
         shape = RoundedCornerShape(8.dp),
+        enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary, contentColor = Color.White
         )
@@ -316,17 +322,17 @@ fun RoundedButton(
 
 @Composable
 private fun JarProgressBar(
-    progress: Float, isClosed: Boolean
+    progress: Float,
+    modifier: Modifier = Modifier,
+    isClosed: Boolean
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+        modifier = modifier
     ) {
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 10.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .height(15.dp),
             progress = { if (isClosed) 1f else progress },
             strokeCap = StrokeCap.Round,
