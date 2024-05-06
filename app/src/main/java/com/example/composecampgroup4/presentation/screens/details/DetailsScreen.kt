@@ -141,7 +141,6 @@ fun DetailsScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .height(60.dp)
                 .padding(top = 20.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -228,7 +227,6 @@ private fun IsActiveStatus(jarClosed: Boolean, goal: Long) {
             Box(
                 modifier = Modifier
                     .padding(top = 8.dp, start = 12.dp, end = 12.dp)
-                    .height(22.dp)
                     .clip(shape = RoundedCornerShape(50.dp))
                     .background(MaterialTheme.colorScheme.onPrimary),
                 contentAlignment = Alignment.Center
@@ -248,7 +246,6 @@ private fun IsActiveStatus(jarClosed: Boolean, goal: Long) {
                 Box(
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .height(22.dp)
                         .clip(shape = RoundedCornerShape(50.dp))
                         .background(MaterialTheme.colorScheme.onPrimary),
                     contentAlignment = Alignment.Center
@@ -269,7 +266,6 @@ private fun IsActiveStatus(jarClosed: Boolean, goal: Long) {
             Box(
                 modifier = Modifier
                     .padding(top = 8.dp, start = 12.dp, end = 12.dp)
-                    .height(22.dp)
                     .clip(shape = RoundedCornerShape(50.dp))
                     .background(Color.LightGray),
                 contentAlignment = Alignment.Center
