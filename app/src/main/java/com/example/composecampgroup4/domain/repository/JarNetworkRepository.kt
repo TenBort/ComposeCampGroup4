@@ -6,4 +6,6 @@ import com.example.composecampgroup4.domain.entity.errors.JarDataError
 
 interface JarNetworkRepository {
     suspend fun loadJarData(jarId: String): Result<Jar, JarDataError>
+
+    suspend fun loadJarData(longJarId: String, ownerName: String): Result<Jar, JarDataError>
 }
