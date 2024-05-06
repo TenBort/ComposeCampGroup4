@@ -153,7 +153,7 @@ fun JarInfo(
             horizontalAlignment = Alignment.End
         ) {
             Icon(
-                painter = if (jar.isFavorite) painterResource(id = R.drawable.ic_star_solid) else painterResource(
+                painter = if (jar.isFavourite) painterResource(id = R.drawable.ic_star_solid) else painterResource(
                     id = R.drawable.ic_star_border
                 ),
                 contentDescription = "copy Jar",

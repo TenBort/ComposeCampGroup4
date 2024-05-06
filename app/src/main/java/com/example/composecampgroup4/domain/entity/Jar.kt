@@ -14,5 +14,5 @@ data class Jar (
     val userComment: String = "",
   
     var isExpanded: Boolean = false,
-    var isFavorite: Boolean = false
+    var isFavourite: Boolean = false
 )
