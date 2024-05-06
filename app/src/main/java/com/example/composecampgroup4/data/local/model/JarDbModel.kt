@@ -16,5 +16,6 @@ data class JarDbModel(
     val currency: Int,
     val description: String,
     val closed: Boolean,
-    val userComment: String
+    val userComment: String,
+    val isFavourite: Boolean
 )

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -99,7 +100,8 @@ private fun SaveButton(
             .padding(horizontal = 16.dp)
             .padding(bottom = 16.dp)
             .height(50.dp),
-        onClick = { onEvent(AddJarUiEvent.SaveButtonClicked) }
+        onClick = { onEvent(AddJarUiEvent.SaveButtonClicked) },
+        shape = RoundedCornerShape(8.dp)
     ) {
         Text(stringResource(R.string.save))
     }

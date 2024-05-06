@@ -11,5 +11,6 @@ data class Jar (
     val currency: Int = 0,
     val description: String = "",
     val closed: Boolean = false,
-    val userComment: String = ""
+    val userComment: String = "",
+    val isFavourite: Boolean = false
 )

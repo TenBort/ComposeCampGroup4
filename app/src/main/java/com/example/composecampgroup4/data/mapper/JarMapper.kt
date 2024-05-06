@@ -28,7 +28,8 @@ fun Jar.toDbModel(): JarDbModel = JarDbModel(
     currency = currency,
     description = description,
     closed = closed,
-    userComment = userComment
+    userComment = userComment,
+    isFavourite = isFavourite
 )
 
 fun JarDbModel.toEntity(): Jar = Jar(
@@ -42,7 +43,8 @@ fun JarDbModel.toEntity(): Jar = Jar(
     currency = currency,
     description = description,
     closed = closed,
-    userComment = userComment
+    userComment = userComment,
+    isFavourite = isFavourite
 )
 
 fun List<JarDbModel>.toEntities(): List<Jar> = map { it.toEntity() }
