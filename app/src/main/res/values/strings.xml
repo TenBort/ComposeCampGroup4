@@ -17,6 +17,16 @@
     <string name="jar_link">https://send.monobank.ua/jar/%1$s</string>
     <string name="jar_details">Деталі збору</string>
     <string name="copy_jar_link">Копіювати посилання на збір</string>
+
+    <string name="jar_accumulated">Накопичено</string>
+    <string name="jar_goal">Ціль</string>
+    <string name="jar_donate">Задонатити</string>
+    <string name="show_details">Показати деталі</string>
+    <string name="hide_details">Згорнути деталі</string>
+    <string name="jar_active">Активний</string>
+    <string name="jar_closed">Завершений</string>
+
+    <string name="jar_no_goal">Без цілі</string>
     <string name="search">Пошук</string>
     <string name="jar_search">Пошук зборів</string>
     <string name="clear_search_field">Очистити поле пошуку</string>
@@ -24,4 +34,5 @@
     <string name="jars_not_founded">За вашим запитом зборів не знайдено</string>
     <string name="empty_jar_list">Список зборів порожній</string>
     <string name="add_new_link">Додайте посилання на новий збір</string>
+
 </resources>

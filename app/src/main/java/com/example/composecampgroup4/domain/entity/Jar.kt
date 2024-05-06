@@ -12,5 +12,7 @@ data class Jar (
     val description: String = "",
     val closed: Boolean = false,
     val userComment: String = "",
-    val isFavourite: Boolean = false
+  
+    var isExpanded: Boolean = false,
+    var isFavorite: Boolean = false
 )

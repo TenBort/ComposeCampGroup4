@@ -2,7 +2,7 @@ package com.example.composecampgroup4.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.composecampgroup4.core.utils.Constants
+import com.example.composecampgroup4.presentation.core.utils.Constants
 import com.example.composecampgroup4.data.local.database.JarDatabase
 import com.example.composecampgroup4.data.network.api.ApiFactory
 import com.example.composecampgroup4.domain.JarLinkValidator
