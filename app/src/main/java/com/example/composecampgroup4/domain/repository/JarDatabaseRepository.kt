@@ -12,4 +12,6 @@ interface JarDatabaseRepository {
     suspend fun upsertJar(jar: Jar)
 
     suspend fun deleteJar(jarId: String)
+
+    suspend fun searchJar(searchRequest: String): List<Jar>
 }
