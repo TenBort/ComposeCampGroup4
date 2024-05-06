@@ -19,21 +19,34 @@ class JarNetworkRepositoryImpl @Inject constructor(
     override suspend fun loadJarData(jarId: String): Result<Jar, JarDataError> {
         return try {
             val (longJarId, ownerName) = apiFactory.handlerApiService.postData(HandlerRequestData(clientId = jarId))
+            loadJarData(longJarId, ownerName)
+        } catch (e: Exception) {
+            handleException(e)
+        }
+    }
+
+    override suspend fun loadJarData(longJarId: String, ownerName: String): Result<Jar, JarDataError> {
+        return try {
             val jar = apiFactory.apiService.getJarData(longJarId).toEntity(ownerName, longJarId)
             Result.Success(jar)
-        } catch (e: retrofit2.HttpException) {
-            when(e.code()) {
-                408 -> Result.Error(JarDataError.Network.REQUEST_TIMEOUT)
-                429 -> Result.Error(JarDataError.Network.TOO_MANY_REQUESTS)
-                in 500..505 -> Result.Error(JarDataError.Network.SERVER_ERROR)
-                else -> Result.Error(JarDataError.Network.UNKNOWN)
-            }
-        } catch (e: IOException){
-            Result.Error(JarDataError.Network.NO_INTERNET)
-        } catch (e: IllegalArgumentException) {
-            Result.Error(JarDataError.WrongId)
         } catch (e: Exception) {
-            Result.Error(JarDataError.Unknown(e.message ?: "Empty exception message"))
+            handleException(e)
+        }
+    }
+
+    private fun handleException(exception: Exception): Result<Jar, JarDataError> {
+        return when(exception) {
+            is retrofit2.HttpException -> {
+                when (exception.code()) {
+                    408 -> Result.Error(JarDataError.Network.REQUEST_TIMEOUT)
+                    429 -> Result.Error(JarDataError.Network.TOO_MANY_REQUESTS)
+                    in 500..505 -> Result.Error(JarDataError.Network.SERVER_ERROR)
+                    else -> Result.Error(JarDataError.Network.UNKNOWN)
+                }
+            }
+            is IOException -> Result.Error(JarDataError.Network.NO_INTERNET)
+            is IllegalArgumentException -> Result.Error(JarDataError.WrongId)
+            else -> Result.Error(JarDataError.Unknown(exception.message ?: "Empty exception message"))
         }
     }
 }

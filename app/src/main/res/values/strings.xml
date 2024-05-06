@@ -9,7 +9,7 @@
     <string name="empty_link_error">Додайте, будь ласка, посилання на збір</string>
     <string name="add_new_jar">Додати новий збір</string>
     <string name="link_to_jar">Посилання на збір</string>
-    <string name="your_comment">Ваш коментар</string>
+    <string name="your_comment">Ваш коментар (опціонально)</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
     <string name="wait_adding_collection">Зачекайте, додаємо збір до вашого списку</string>
@@ -17,4 +17,11 @@
     <string name="jar_link">https://send.monobank.ua/jar/%1$s</string>
     <string name="jar_details">Деталі збору</string>
     <string name="copy_jar_link">Копіювати посилання на збір</string>
+    <string name="search">Пошук</string>
+    <string name="jar_search">Пошук зборів</string>
+    <string name="clear_search_field">Очистити поле пошуку</string>
+    <string name="jars_refreshed">Інформація по зборам оновлена</string>
+    <string name="jars_not_founded">За вашим запитом зборів не знайдено</string>
+    <string name="empty_jar_list">Список зборів порожній</string>
+    <string name="add_new_link">Додайте посилання на новий збір</string>
 </resources>

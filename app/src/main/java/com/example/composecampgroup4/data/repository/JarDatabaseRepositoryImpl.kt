@@ -21,4 +21,7 @@ class JarDatabaseRepositoryImpl @Inject constructor(
     override suspend fun upsertJar(jar: Jar) = jarDao.upsertJar(jar.toDbModel())
 
     override suspend fun deleteJar(jarId: String) = jarDao.deleteJar(jarId)
+
+    override suspend fun searchJar(searchRequest: String): List<Jar> =
+        jarDao.searchJar(searchRequest).toEntities()
 }

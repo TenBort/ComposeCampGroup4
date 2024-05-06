@@ -26,7 +26,7 @@ object AppModule {
             context,
             JarDatabase::class.java,
             Constants.JAR_DB
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
