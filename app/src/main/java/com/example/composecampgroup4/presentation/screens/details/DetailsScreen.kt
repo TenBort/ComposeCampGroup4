@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -117,7 +120,8 @@ fun DetailsScreen(
     )
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
         Spacer(modifier = Modifier.height(48.dp))
@@ -141,9 +145,20 @@ fun DetailsScreen(
                 .padding(top = 20.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                TitleJarInfo(uiState = uiState)
-                JarCashInfo(uiState = uiState)
-                Comment(uiState = uiState)
+                TitleJarInfo(
+                    title = uiState.jar.title,
+                    ownerName = uiState.jar.ownerName,
+                    description = uiState.jar.description,
+                    jarClosed = uiState.jar.closed,
+                    goal = uiState.jar.goal
+                )
+                JarCashInfo(
+                    amount = uiState.jar.amount,
+                    goal = uiState.jar.goal,
+                    currency = uiState.jar.currency,
+                    jarClosed = uiState.jar.closed
+                )
+                Comment(jarClosed = uiState.jar.closed, comment = uiState.jar.userComment)
             }
 
         }
@@ -151,7 +166,14 @@ fun DetailsScreen(
 }
 
 @Composable
-private fun TitleJarInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) {
+private fun TitleJarInfo(
+    modifier: Modifier = Modifier,
+    title: String,
+    ownerName: String,
+    description: String,
+    jarClosed: Boolean,
+    goal: Long
+) {
     Box(
         modifier = modifier
             .fillMaxWidth(), contentAlignment = Alignment.Center
@@ -161,30 +183,33 @@ private fun TitleJarInfo(modifier: Modifier = Modifier, uiState: DetailsUiState)
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = uiState.jar.ownerName,
+                text = ownerName,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = uiState.jar.title,
+                text = title,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
             )
-            IsActiveStatus(uiState = uiState)
+            IsActiveStatus(jarClosed = jarClosed, goal = goal)
             Text(
-                text = uiState.jar.description,
+                text = description,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(top = if (uiState.jar.description.isEmpty()) 0.dp else 20.dp)
+                    .padding(top = if (description.isEmpty()) 0.dp else 20.dp)
                     .then(
-                        if (uiState.jar.description.isEmpty()) {
+                        if (description.isEmpty()) {
                             Modifier.size(0.dp)
                         } else {
                             Modifier
@@ -197,11 +222,9 @@ private fun TitleJarInfo(modifier: Modifier = Modifier, uiState: DetailsUiState)
 }
 
 @Composable
-private fun IsActiveStatus(uiState: DetailsUiState) {
+private fun IsActiveStatus(jarClosed: Boolean, goal: Long) {
     Row {
-        val closed = uiState.jar.closed
-        val goal = uiState.jar.goal
-        if (!closed) {
+        if (!jarClosed) {
             Box(
                 modifier = Modifier
                     .padding(top = 8.dp, start = 12.dp, end = 12.dp)
@@ -213,6 +236,7 @@ private fun IsActiveStatus(uiState: DetailsUiState) {
                 Text(
                     text = stringResource(R.string.jar_active),
                     fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(
                         start = 12.dp,
                         end = 12.dp
@@ -226,12 +250,13 @@ private fun IsActiveStatus(uiState: DetailsUiState) {
                         .padding(top = 8.dp)
                         .height(22.dp)
                         .clip(shape = RoundedCornerShape(50.dp))
-                        .background(MaterialTheme.colorScheme.surface),
+                        .background(MaterialTheme.colorScheme.onPrimary),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = stringResource(R.string.jar_no_goal),
                         fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(
                             start = 12.dp,
                             end = 12.dp
@@ -265,8 +290,16 @@ private fun IsActiveStatus(uiState: DetailsUiState) {
 }
 
 @Composable
-private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) {
-    val progress: Float = uiState.jar.amount.toFloat() / uiState.jar.goal.toFloat()
+private fun JarCashInfo(
+    modifier: Modifier = Modifier,
+    amount: Long,
+    goal: Long,
+    currency: Int,
+    jarClosed: Boolean
+) {
+    val progress = amount.toFloat() / goal.toFloat()
+
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -288,35 +321,37 @@ private fun JarCashInfo(modifier: Modifier = Modifier, uiState: DetailsUiState) 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     JarCashBox(
-                        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                        painter = painterResource(id = R.drawable.ic_launcher_background),
                         title = stringResource(id = R.string.jar_accumulated),
-                        amount = uiState.jar.amount,
-                        currency = uiState.jar.currency
+                        amount = amount,
+                        currency = currency
+
                     )
-                    if (uiState.jar.goal > 0) {
-                        Spacer(modifier = Modifier.width(if (uiState.jar.goal < 100000000000) 20.dp else 16.dp))
+                    if (goal > 0) {
+                        Spacer(modifier = Modifier.width(if (goal < 100000000000) 20.dp else 16.dp))
                         VerticalDivider(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(1.dp),
                             color = MaterialTheme.colorScheme.outline
                         )
-                        Spacer(modifier = Modifier.width(if (uiState.jar.goal < 100000000000) 20.dp else 16.dp))
+                        Spacer(modifier = Modifier.width(if (goal < 100000000000) 20.dp else 16.dp))
                         JarCashBox(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                            painter = painterResource(id = R.drawable.ic_launcher_background),
                             title = stringResource(id = R.string.jar_goal),
-                            amount = uiState.jar.goal,
-                            currency = uiState.jar.currency
+                            amount = goal,
+                            currency = currency
+
                         )
                     }
                 }
 
             }
             LinearProgressIndicator(
-                progress = { if (uiState.jar.closed) 1f else progress },
+                progress = { if (jarClosed) 1f else progress },
                 strokeCap = StrokeCap.Round,
                 trackColor = MaterialTheme.colorScheme.onPrimary,
-                color = if (uiState.jar.closed) MaterialTheme.colorScheme.outline
+                color = if (jarClosed) MaterialTheme.colorScheme.outline
                 else MaterialTheme.colorScheme.primary,
                 modifier = modifier
                     .fillMaxWidth()
@@ -344,7 +379,7 @@ private fun JarCashBox(
         Icon(
             painter = painter,
             contentDescription = "",
-            modifier = modifier.size(22.dp)
+            modifier = modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column(
@@ -356,11 +391,14 @@ private fun JarCashBox(
                 text = title,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.outline,
-            )
+
+                )
             Text(
                 text = "$formattedAmount $currencySymbol",
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
         }
@@ -368,21 +406,22 @@ private fun JarCashBox(
 }
 
 @Composable
-private fun Comment(modifier: Modifier = Modifier, uiState: DetailsUiState) {
+private fun Comment(modifier: Modifier = Modifier, jarClosed: Boolean, comment: String) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 50.dp)
     ) {
         Column {
-            val yourComent = stringResource(R.string.your_comment)
+            val yourComment = stringResource(R.string.your_comment)
             Text(
-                text = "$yourComent:",
+                text = "$yourComment:",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.outline
             )
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = uiState.jar.userComment,
+                text = comment,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.outline
             )
@@ -390,7 +429,7 @@ private fun Comment(modifier: Modifier = Modifier, uiState: DetailsUiState) {
             Text(
                 text = stringResource(R.string.jar_comment_edit),
                 fontSize = 12.sp,
-                color = if (uiState.jar.closed) MaterialTheme.colorScheme.outline
+                color = if (jarClosed) MaterialTheme.colorScheme.outline
                 else MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable { })
         }
@@ -405,7 +444,10 @@ private fun getCurrencySymbol(numericCode: Int): String? {
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    // uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun DetailsScreenPreview() {
     ComposeCampGroup4Theme {
@@ -415,18 +457,19 @@ private fun DetailsScreenPreview() {
                 jar = Jar(
                     jarId = "123",
                     longJarId = "1234567890",
-                    amount = 58935366131,
-                    goal = 100000000000,
+                    amount = 158935366132,
+                    goal = 170000000000,
                     ownerIcon = "https://example.com/icon.png",
                     title = "Благодійний фонд Сергія Притули",
                     ownerName = "Благодійний фонд Сергія Притули, БО",
                     currency = 980,
                     description = "опис баночки",
                     closed = false,
-                    userComment = "....що ж тут написати, хз хз, але ж треба тестити"
+                    userComment = "Притула, дрони"
                 )
             ),
             onEvent = { }
         )
     }
 }
+
