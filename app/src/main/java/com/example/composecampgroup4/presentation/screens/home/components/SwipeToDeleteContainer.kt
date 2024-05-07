@@ -5,35 +5,37 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 import com.example.composecampgroup4.R
+import kotlinx.coroutines.delay
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> SwipeToDeleteContainer(
     item: T,
@@ -42,49 +44,26 @@ fun <T> SwipeToDeleteContainer(
     content: @Composable (T) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var isSwiping by remember { mutableStateOf(false) }
 
     var isRemoved by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = showDialog) {
-        if (showDialog){
-            delay(animationDuration.toLong())
-            showDialog = true
-        }
-    }
-
-    AnimatedVisibility(
-        visible = !isRemoved,
-        exit = shrinkVertically(
-            animationSpec = tween(durationMillis = animationDuration),
-            shrinkTowards = Alignment.Top
-        ) + fadeOut()
-    ) {
-        Box(
-            modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), 0) }
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures { change, dragAmount ->
-                        change.consume()
-                        offsetX += dragAmount
-                        isSwiping = offsetX < -10
-                    }
-                },
-
-            ) {
-            DeleteBackground(isSwiping)
-
-            content(item)
-
-            if (offsetX < -150 || offsetX > 150) {
-                LaunchedEffect(Unit) {
-                    showDialog = true
-                }
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                showDialog = true
+                false
+            } else {
+                false
             }
+        }
+    )
+
+    LaunchedEffect(key1 = isRemoved) {
+        if (isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
         }
     }
 
@@ -108,8 +87,6 @@ fun <T> SwipeToDeleteContainer(
                 Button(
                     onClick = {
                         showDialog = false
-                        isRemoved = false
-                        offsetX = 0f
                     }
                 ) {
                     Text(text = stringResource(id = R.string.jar_delete_cancel))
@@ -117,13 +94,34 @@ fun <T> SwipeToDeleteContainer(
             }
         )
     }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismissBox(
+            state = state,
+            backgroundContent = {
+                DeleteBackground(swipeDismissState = state)
+            },
+            enableDismissFromEndToStart = true,
+            content = { content(item) },
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteBackground(
-    isSwiping:Boolean
+    swipeDismissState: SwipeToDismissBoxState
 ) {
-    val color = if (isSwiping) { MaterialTheme.colorScheme.errorContainer } else Color.Transparent
+    val color = if (swipeDismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+        MaterialTheme.colorScheme.errorContainer
+    } else Color.Transparent
+
     Box(
         modifier = Modifier
             .fillMaxSize()
