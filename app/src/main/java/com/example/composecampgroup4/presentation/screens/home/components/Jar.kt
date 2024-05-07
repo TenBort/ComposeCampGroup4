@@ -29,12 +29,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composecampgroup4.R
 import com.example.composecampgroup4.domain.entity.Jar
 import com.example.composecampgroup4.presentation.core.components.OwnerJarImage
+import com.example.composecampgroup4.presentation.core.utils.getCurrencySymbol
 
 @Composable
 fun Jar(
@@ -52,7 +54,10 @@ fun Jar(
 
     Card(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)),
+            .background(
+                MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
+                shape = RoundedCornerShape(16.dp)
+            ),
         shape = RoundedCornerShape(16.dp)
     ) {
         JarInfo(jar = jar, Modifier.fillMaxWidth(), onFavoriteClick, onCopyClick)
@@ -98,7 +103,7 @@ fun JarInfo(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = jar.ownerName,
+                text = jar.ownerName + " " + stringResource(id = R.string.jar_owner_additions),
                 modifier = Modifier.wrapContentSize(),
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground
@@ -108,6 +113,7 @@ fun JarInfo(
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(top = 4.dp),
+                fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -119,6 +125,7 @@ fun JarInfo(
                         id = R.string.jar_active
                     ),
                     color = if (isClosed) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.onBackground,
+                    fontSize = 10.sp,
                     modifier = Modifier
                         .background(
                             if (isClosed) {
@@ -128,7 +135,7 @@ fun JarInfo(
                             },
                             shape = RoundedCornerShape(16.dp)
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
                 )
 
                 if (jar.goal == 0L) {
@@ -153,9 +160,7 @@ fun JarInfo(
             horizontalAlignment = Alignment.End
         ) {
             Icon(
-                painter = if (jar.isFavourite) painterResource(id = R.drawable.ic_star_solid) else painterResource(
-                    id = R.drawable.ic_star_border
-                ),
+                painter = if (jar.isFavourite) painterResource(id = R.drawable.ic_star_solid) else painterResource(id = R.drawable.ic_star_border),
                 contentDescription = "copy Jar",
                 modifier = Modifier
                     .clickable(
@@ -197,7 +202,7 @@ fun ExpendedJarContent(
                     id = R.drawable.ic_jar_amount
                 ),
                 title = stringResource(id = R.string.jar_accumulated),
-                money = jar.amount,
+                amount = jar.amount,
                 currency = jar.currency
             )
 
@@ -215,7 +220,7 @@ fun ExpendedJarContent(
                         id = R.drawable.ic_jar_goal
                     ),
                     title = stringResource(id = R.string.jar_goal),
-                    money = jar.goal,
+                    amount = jar.goal,
                     currency = jar.currency
                 )
             }
@@ -249,7 +254,7 @@ fun ExpandableSection(
             text = if (isExpanded) stringResource(id = R.string.hide_details) else stringResource(id = R.string.show_details),
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             fontSize = 12.sp,
-            color = if (isClosed) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.outline
+            color = if (isClosed) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
         )
 
         AnimatedVisibility(
@@ -263,8 +268,11 @@ fun ExpandableSection(
 
 @Composable
 fun MoneyJarText(
-    modifier: Modifier = Modifier, painter: Painter, title: String, money: Long, currency: Int
+    modifier: Modifier = Modifier, painter: Painter, title: String, amount: Long, currency: Int
 ) {
+    val currencySymbol = getCurrencySymbol(currency)
+    val formattedAmount = String.format("%,.2f", amount / 100.0)
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center,
@@ -274,12 +282,13 @@ fun MoneyJarText(
             painter = painter,
             contentDescription = "icon",
             modifier = Modifier
-                .padding(start = 4.dp)
+                .padding(end = 4.dp)
                 .size(20.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column(
-            modifier = Modifier
+            modifier = Modifier,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = title,
@@ -288,7 +297,7 @@ fun MoneyJarText(
                 color = MaterialTheme.colorScheme.outline
             )
             Text(
-                text = "$money $currency",
+                text = "$formattedAmount $currencySymbol",
                 modifier = Modifier,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onBackground
@@ -331,8 +340,8 @@ private fun JarProgressBar(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-                .height(15.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .height(16.dp),
             progress = { if (isClosed) 1f else progress },
             strokeCap = StrokeCap.Round,
             trackColor = MaterialTheme.colorScheme.onPrimary,
@@ -343,7 +352,7 @@ private fun JarProgressBar(
 
 @Preview
 @Composable
-fun ExpandableSectionPreview() {
+fun JarPreview() {
     val jar = remember {
         mutableStateOf(
             Jar(

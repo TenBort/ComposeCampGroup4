@@ -2,33 +2,25 @@ package com.example.composecampgroup4.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,7 +31,9 @@ import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
 import com.example.composecampgroup4.presentation.core.components.PullToRefreshLazyColumn
 import com.example.composecampgroup4.presentation.core.components.TopBarApp
 import com.example.composecampgroup4.presentation.screens.home.components.EmptyHomeScreen
+import com.example.composecampgroup4.presentation.screens.home.components.Jar
 import com.example.composecampgroup4.presentation.screens.home.components.SearchTextField
+import com.example.composecampgroup4.presentation.screens.home.components.SwipeToDeleteContainer
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeActionEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiState
@@ -84,6 +78,10 @@ fun HomeScreen(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit
 ) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+    val localUriHandler = LocalUriHandler.current
+
     if (uiState.jars.isEmpty() && !uiState.isSearching) {
         EmptyHomeScreen(isSearching = false)
     } else {
@@ -106,38 +104,19 @@ fun HomeScreen(
                         EmptyHomeScreen(isSearching = true)
                     } else {
 
-                        // TODO: Remove this card, and implement yours
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
-                            )
+                        SwipeToDeleteContainer(item = jar,
+                            onDelete = {
+                                onEvent(HomeUiEvent.DeleteJar(it.jarId))
+                            }
                         ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.Top
-                            ) {
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = "${jar.ownerName} створив збір",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = jar.title,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
-
-                                IconButton(onClick = { onEvent(HomeUiEvent.JarFavouriteChanged(jar = jar)) }) {
-                                    Icon(
-                                        imageVector = if (jar.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                        contentDescription = null
-                                    )
-                                }
+                            Jar(jar = it,
+                                onCopyClick = {
+                                    clipboardManager.setText(AnnotatedString(context.getString(R.string.jar_link, jar.jarId)))
+                                },
+                                onFavoriteClick = {
+                                    onEvent(HomeUiEvent.JarFavouriteChanged(it))
+                                }) {
+                                localUriHandler.openUri(context.getString(R.string.jar_link, jar.jarId))
                             }
                         }
                     }

@@ -58,11 +58,11 @@ import com.example.composecampgroup4.navigation.NavigationState
 import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
 import com.example.composecampgroup4.presentation.core.components.OwnerJarImage
 import com.example.composecampgroup4.presentation.core.components.TopBarApp
+import com.example.composecampgroup4.presentation.core.utils.getCurrencySymbol
 import com.example.composecampgroup4.presentation.screens.details.components.DetailsBottomButton
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiEvent
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiState
 import com.example.composecampgroup4.presentation.theme.ComposeCampGroup4Theme
-import java.util.Currency
 
 @Composable
 fun DetailsScreenRoot(navigationState: NavigationState, jarId: String) {
@@ -433,12 +433,6 @@ private fun Comment(modifier: Modifier = Modifier, jarClosed: Boolean, comment: 
 
     }
 }
-
-private fun getCurrencySymbol(numericCode: Int): String? {
-    val currency = Currency.getAvailableCurrencies().firstOrNull { it.numericCode == numericCode }
-    return currency?.symbol
-}
-
 
 @Preview(
     showBackground = true, showSystemUi = true,
