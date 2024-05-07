@@ -93,7 +93,7 @@ fun HomeScreen(
         Column(modifier = modifier) {
             PullToRefreshLazyColumn(
                 isRefreshing = uiState.isRefreshing,
-                onRefresh = { onEvent(HomeUiEvent.RefreshStarted) }
+                onRefresh = { onEvent(HomeUiEvent.PulledToRefresh) }
             ) {
                 stickyHeader {
                     SearchTextField(
@@ -157,7 +157,7 @@ private fun HomeTopBar(
     TopBarApp(
         title = "Назва додатку",
         actions = {
-            IconButton(onClick = { onEvent(HomeUiEvent.RefreshStarted) }) {
+            IconButton(onClick = { onEvent(HomeUiEvent.RefreshIconClicked) }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Оновити стан зборів",

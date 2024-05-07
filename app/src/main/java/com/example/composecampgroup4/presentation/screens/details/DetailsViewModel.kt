@@ -46,7 +46,7 @@ class DetailsViewModel @AssistedInject constructor(
     private fun saveComment() {
         if (currentState.editButtonState is EditButtonState.Save) {
             launch {
-                jarDatabaseRepository.upsertJar(currentState.jar.copy(userComment = currentState.comment))
+                jarDatabaseRepository.upsertJar(currentState.jar.copy(userComment = currentState.comment.trim()))
             }
         }
     }
@@ -63,7 +63,7 @@ class DetailsViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateComment(comment: String) = updateState { it.copy(comment = comment.trim()) }
+    private fun updateComment(comment: String) = updateState { it.copy(comment = comment) }
 
     private fun updateEditedState() {
         updateState {
