@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -75,7 +77,8 @@ fun DetailsScreenRoot(navigationState: NavigationState, jarId: String) {
                     clipboardManager.setText(
                         AnnotatedString(context.getString(R.string.jar_link, uiState.jar.jarId))
                     )
-                }
+                },
+                enabled = !uiState.jar.closed
             )
         },
         viewModel = viewModel
@@ -93,6 +96,7 @@ fun DetailsScreen(
     onEvent: (DetailsUiEvent) -> Unit,
 ) {
     var backgroundBoxTopOffset by remember { mutableIntStateOf(0) }
+    val scrollState = rememberScrollState()
 
     //Background with rounded top-corners
     Box(modifier = Modifier
@@ -124,22 +128,28 @@ fun DetailsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TitleJarInfo(
-            title = uiState.jar.title,
-            ownerName = uiState.jar.ownerName,
-            description = uiState.jar.description,
-            jarClosed = uiState.jar.closed,
-            goal = uiState.jar.goal
-        )
+        Column(
+            modifier = Modifier.verticalScroll(state = scrollState)
+        ) {
+            if (!uiState.commentEdited) {
+                TitleJarInfo(
+                    title = uiState.jar.title,
+                    ownerName = uiState.jar.ownerName,
+                    description = uiState.jar.description,
+                    jarClosed = uiState.jar.closed,
+                    goal = uiState.jar.goal
+                )
 
-        JarCashInfo(
-            amount = uiState.jar.amount,
-            goal = uiState.jar.goal,
-            currency = uiState.jar.currency,
-            jarClosed = uiState.jar.closed
-        )
+                JarCashInfo(
+                    amount = uiState.jar.amount,
+                    goal = uiState.jar.goal,
+                    currency = uiState.jar.currency,
+                    jarClosed = uiState.jar.closed
+                )
+            }
 
-        Comment(jarClosed = uiState.jar.closed, comment = uiState.jar.userComment)
+            Comment(uiState = uiState, onEvent = onEvent)
+        }
     }
 }
 
