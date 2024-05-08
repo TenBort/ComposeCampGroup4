@@ -7,7 +7,7 @@ interface JarDatabaseRepository {
 
     fun getAllJars(): Flow<List<Jar>>
 
-    suspend fun getJar(jarId: String): Jar
+    suspend fun getJar(jarId: String): Flow<Jar>
 
     suspend fun upsertJar(jar: Jar)
 

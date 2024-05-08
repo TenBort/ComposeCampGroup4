@@ -15,6 +15,7 @@ import com.example.composecampgroup4.presentation.screens.home.screen_handling.H
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import javax.inject.Inject
@@ -44,38 +45,45 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeUiEvent.JarFavouriteChanged -> updateJarFavourite(event.jar)
             is HomeUiEvent.SearchChanged -> updateSearchRequest(event.search)
-            HomeUiEvent.RefreshStarted -> refreshJarList()
             is HomeUiEvent.DeleteJar -> deleteJar(event.jarId)
+            HomeUiEvent.PulledToRefresh -> refreshWithPullJarList()
+            HomeUiEvent.RefreshIconClicked -> launch { getRefreshedJob() }
         }
     }
 
-    private fun refreshJarList() {
+    private fun refreshWithPullJarList() {
         launch {
             updateRefreshState(true)
+            val refreshJob = getRefreshedJob()
+            refreshJob.join()
+            updateRefreshState(false)
+        }
+    }
 
-            val refreshJob = launch {
-                val loadedResult = jarsLoadResult()
-                val updatedJars = mutableListOf<Jar>()
-                var isError = false
-                for (result in loadedResult) {
-                    when(result) {
-                        is Result.Error -> {
-                            sendMessage(result.error.asUiText())
-                            isError = true
-                            break
-                        }
-                        is Result.Success -> updatedJars.add(result.data)
+    private suspend fun getRefreshedJob(): Job {
+        return launch {
+            val loadedResult = jarsLoadResult()
+            val updatedJars = mutableListOf<Jar>()
+            var isError = false
+            for (result in loadedResult) {
+                when (result) {
+                    is Result.Error -> {
+                        sendMessage(result.error.asUiText())
+                        isError = true
+                        break
                     }
-                }
 
-                if(!isError) {
-                    updateJarList(updatedJars)
-                    sendMessage(UiText.StringResource(R.string.jars_refreshed))
+                    is Result.Success -> {
+                        val loadedJar = copyFavouriteState(result.data)
+                        updatedJars.add(loadedJar)
+                    }
                 }
             }
 
-            refreshJob.join()
-            updateRefreshState(false)
+            if (!isError) {
+                updateJarList(updatedJars)
+                sendMessage(UiText.StringResource(R.string.jars_refreshed))
+            }
         }
     }
 
@@ -84,7 +92,10 @@ class HomeViewModel @Inject constructor(
 
         currentState.jars.forEach { jar ->
             val resultDeferred = viewModelScope.async {
-                jarNetworkRepository.loadJarData(longJarId = jar.longJarId, ownerName = jar.ownerName)
+                jarNetworkRepository.loadJarData(
+                    longJarId = jar.longJarId,
+                    ownerName = jar.ownerName
+                )
             }
 
             jarsDeferred.add(resultDeferred)
@@ -106,6 +117,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun copyFavouriteState(jar: Jar): Jar {
+        var loadedJar = jar
+        val currentJar = currentState.jars.find { it.jarId == loadedJar.jarId }
+        currentJar?.let { loadedJar = loadedJar.copy(isFavourite = it.isFavourite) }
+        return loadedJar
+    }
+
     private fun updateJarList(jarList: List<Jar>) = updateState { it.copy(jars = jarList) }
 
     private fun updateSearchRequest(searchRequest: String) {
@@ -117,7 +135,8 @@ class HomeViewModel @Inject constructor(
     private fun updateSearchState(isSearching: Boolean) =
         updateState { it.copy(isSearching = isSearching) }
 
-    private fun updateRefreshState(isRefreshing: Boolean) = updateState { it.copy(isRefreshing = isRefreshing) }
+    private fun updateRefreshState(isRefreshing: Boolean) =
+        updateState { it.copy(isRefreshing = isRefreshing) }
 
 
     private fun updateJarFavourite(jar: Jar) {
