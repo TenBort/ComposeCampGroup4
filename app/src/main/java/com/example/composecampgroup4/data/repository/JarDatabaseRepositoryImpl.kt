@@ -16,7 +16,7 @@ class JarDatabaseRepositoryImpl @Inject constructor(
 
     override fun getAllJars(): Flow<List<Jar>> = jarDao.getJars().map { it.toEntities() }
 
-    override suspend fun getJar(jarId: String): Jar = jarDao.getJar(jarId).toEntity()
+    override suspend fun getJar(jarId: String): Flow<Jar> = jarDao.getJar(jarId).map { it.toEntity() }
 
     override suspend fun upsertJar(jar: Jar) = jarDao.upsertJar(jar.toDbModel())
 

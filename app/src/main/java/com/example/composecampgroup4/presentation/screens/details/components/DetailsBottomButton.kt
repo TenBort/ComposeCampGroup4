@@ -23,6 +23,7 @@ import com.example.composecampgroup4.R
 @Composable
 fun DetailsBottomButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onButtonClick: () -> Unit,
     onCopyClick: () -> Unit
 ) {
@@ -32,7 +33,8 @@ fun DetailsBottomButton(
                 .weight(1f)
                 .height(50.dp),
             onClick = onButtonClick,
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            enabled = enabled
         ) {
             Text(text = "Задонатити")
         }

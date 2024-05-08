@@ -13,7 +13,7 @@ interface JarDao {
     fun getJars(): Flow<List<JarDbModel>>
 
     @Query("SELECT * FROM jars WHERE jarId=:jarId")
-    fun getJar(jarId: String): JarDbModel
+    fun getJar(jarId: String): Flow<JarDbModel>
 
     @Upsert
     suspend fun upsertJar(jarDbModel: JarDbModel)

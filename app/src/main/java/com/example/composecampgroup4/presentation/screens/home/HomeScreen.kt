@@ -1,6 +1,7 @@
 package com.example.composecampgroup4.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -72,7 +73,8 @@ fun HomeScreenRoot(
         HomeScreen(
             modifier = Modifier.padding(horizontal = 16.dp),
             uiState = uiState,
-            onEvent = viewModel::onEvent
+            onEvent = viewModel::onEvent,
+            navigateToDetails = { navigationState.navigateToDetails(it)}
         )
     }
 }
@@ -82,7 +84,8 @@ fun HomeScreenRoot(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
-    onEvent: (HomeUiEvent) -> Unit
+    onEvent: (HomeUiEvent) -> Unit,
+    navigateToDetails: (String) -> Unit
 ) {
     if (uiState.jars.isEmpty() && !uiState.isSearching) {
         EmptyHomeScreen(isSearching = false)
@@ -90,7 +93,7 @@ fun HomeScreen(
         Column(modifier = modifier) {
             PullToRefreshLazyColumn(
                 isRefreshing = uiState.isRefreshing,
-                onRefresh = { onEvent(HomeUiEvent.RefreshStarted) }
+                onRefresh = { onEvent(HomeUiEvent.PulledToRefresh) }
             ) {
                 stickyHeader {
                     SearchTextField(
@@ -108,7 +111,7 @@ fun HomeScreen(
 
                         // TODO: Remove this card, and implement yours
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().clickable { navigateToDetails(jar.jarId) },
                             shape = RoundedCornerShape(8.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
@@ -154,7 +157,7 @@ private fun HomeTopBar(
     TopBarApp(
         title = "Назва додатку",
         actions = {
-            IconButton(onClick = { onEvent(HomeUiEvent.RefreshStarted) }) {
+            IconButton(onClick = { onEvent(HomeUiEvent.RefreshIconClicked) }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Оновити стан зборів",
@@ -181,7 +184,8 @@ private fun HomeScreenPreview() {
     ComposeCampGroup4Theme {
         HomeScreen(
             uiState = HomeUiState(),
-            onEvent = { }
+            onEvent = { },
+            navigateToDetails = {}
         )
     }
 }
