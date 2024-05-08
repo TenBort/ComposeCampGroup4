@@ -5,4 +5,5 @@ import com.example.composecampgroup4.presentation.core.utils.UiText
 
 sealed interface HomeActionEvent : ActionEvent {
     data class ShowMessage(val message: UiText) : HomeActionEvent
+    data class NavigateToDetails(val jarId: String) : HomeActionEvent
 }

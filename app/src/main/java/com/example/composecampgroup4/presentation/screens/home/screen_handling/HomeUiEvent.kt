@@ -13,4 +13,6 @@ sealed interface HomeUiEvent : UiEvent {
     data object PulledToRefresh : HomeUiEvent
 
     data object RefreshIconClicked : HomeUiEvent
+
+    data class OnJarClicked(val jarId: String) : HomeUiEvent
 }

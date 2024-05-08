@@ -8,6 +8,6 @@ data class HomeUiState(
     val jars: List<Jar> = emptyList(),
     val searchRequest: String = "",
     val isSearching: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
 
 ) : UiState

@@ -46,6 +46,7 @@ class HomeViewModel @Inject constructor(
             is HomeUiEvent.JarFavouriteChanged -> updateJarFavourite(event.jar)
             is HomeUiEvent.SearchChanged -> updateSearchRequest(event.search)
             is HomeUiEvent.DeleteJar -> deleteJar(event.jarId)
+            is HomeUiEvent.OnJarClicked -> sendActionEvent(HomeActionEvent.NavigateToDetails(event.jarId))
             HomeUiEvent.PulledToRefresh -> refreshWithPullJarList()
             HomeUiEvent.RefreshIconClicked -> launch { getRefreshedJob() }
         }
