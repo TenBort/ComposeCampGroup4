@@ -99,10 +99,9 @@ fun JarInfo(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top
     ) {
-
+        Spacer(modifier = Modifier.width(16.dp))
         OwnerJarImage(
             modifier = Modifier
-                .padding(start = 16.dp)
                 .size(70.dp)
                 .align(Alignment.CenterVertically),
             imageUri = Uri.parse(jar.ownerIcon),

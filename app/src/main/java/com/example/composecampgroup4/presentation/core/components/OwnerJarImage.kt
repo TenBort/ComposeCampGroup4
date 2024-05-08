@@ -2,7 +2,6 @@ package com.example.composecampgroup4.presentation.core.components
 
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,7 +38,7 @@ fun OwnerJarImage(
                 .build(),
             contentDescription = "Зображення власника збору",
             contentScale = ContentScale.Crop,
-            modifier = modifier.size(144.dp)
+            modifier = modifier
         )
     }
 }
