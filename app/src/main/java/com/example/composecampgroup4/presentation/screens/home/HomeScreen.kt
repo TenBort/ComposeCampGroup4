@@ -1,7 +1,6 @@
 package com.example.composecampgroup4.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
@@ -55,6 +54,8 @@ fun HomeScreenRoot(
                     is HomeActionEvent.ShowMessage -> snackbarHostState.showSnackbar(
                         actionEvent.message.asString(context)
                     )
+
+                    is HomeActionEvent.NavigateToDetails -> navigationState.navigateToDetails(actionEvent.jarId)
                 }
             }
         },
@@ -68,7 +69,6 @@ fun HomeScreenRoot(
             modifier = Modifier.padding(horizontal = 16.dp),
             uiState = uiState,
             onEvent = viewModel::onEvent,
-            navigateToDetails = { navigationState.navigateToDetails(it)}
         )
     }
 }
@@ -79,7 +79,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
-    navigateToDetails: (String) -> Unit
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -106,19 +105,30 @@ fun HomeScreen(
                     if (uiState.jars.isEmpty() && uiState.isSearching) {
                         EmptyHomeScreen(isSearching = true)
                     } else {
-                        SwipeToDeleteContainer(item = jar,
+                        SwipeToDeleteContainer(
+                            item = jar,
                             onDelete = {
                                 onEvent(HomeUiEvent.DeleteJar(it.jarId))
                             }
                         ) {
-                            Jar(jar = it,
+                            Jar(
+                                jar = it,
                                 onCopyClick = {
-                                    clipboardManager.setText(AnnotatedString(context.getString(R.string.jar_link, jar.jarId)))
+                                    clipboardManager.setText(
+                                        AnnotatedString(context.getString(R.string.jar_link, jar.jarId))
+                                    )
                                 },
-                                onFavoriteClick = {
-                                    onEvent(HomeUiEvent.JarFavouriteChanged(it))
-                                }) {
-                                localUriHandler.openUri(context.getString(R.string.jar_link, jar.jarId))
+                                onFavoriteClick = { jar ->
+                                    onEvent(HomeUiEvent.JarFavouriteChanged(jar))
+                                },
+                                onJarClick = { onEvent(HomeUiEvent.OnJarClicked(it)) }
+                                ) {
+                                localUriHandler.openUri(
+                                    context.getString(
+                                        R.string.jar_link,
+                                        jar.jarId
+                                    )
+                                )
                             }
                         }
                     }
@@ -133,7 +143,7 @@ private fun HomeTopBar(
     onEvent: (HomeUiEvent) -> Unit
 ) {
     TopBarApp(
-        title = "Назва додатку",
+        title = stringResource(R.string.jars_tracker),
         actions = {
             IconButton(onClick = { onEvent(HomeUiEvent.RefreshIconClicked) }) {
                 Icon(
@@ -163,7 +173,6 @@ private fun HomeScreenPreview() {
         HomeScreen(
             uiState = HomeUiState(),
             onEvent = { },
-            navigateToDetails = {}
         )
     }
 }

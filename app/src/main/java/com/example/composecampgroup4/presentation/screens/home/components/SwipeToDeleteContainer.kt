@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -87,7 +89,12 @@ fun <T> SwipeToDeleteContainer(
                 Button(
                     onClick = {
                         showDialog = false
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(text = stringResource(id = R.string.jar_delete_cancel))
                 }
@@ -108,6 +115,7 @@ fun <T> SwipeToDeleteContainer(
                 DeleteBackground(swipeDismissState = state)
             },
             enableDismissFromEndToStart = true,
+            enableDismissFromStartToEnd = false,
             content = { content(item) },
         )
     }
@@ -119,7 +127,7 @@ fun DeleteBackground(
     swipeDismissState: SwipeToDismissBoxState
 ) {
     val color = if (swipeDismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-        MaterialTheme.colorScheme.errorContainer
+        MaterialTheme.colorScheme.secondaryContainer
     } else Color.Transparent
 
     Box(
@@ -132,7 +140,7 @@ fun DeleteBackground(
         Icon(
             imageVector = Icons.Default.Delete,
             contentDescription = null,
-            tint = Color.White
+            tint = MaterialTheme.colorScheme.onSecondaryContainer
         )
     }
 }

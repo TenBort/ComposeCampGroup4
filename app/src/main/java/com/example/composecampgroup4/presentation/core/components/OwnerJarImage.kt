@@ -13,18 +13,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.composecampgroup4.R
 
 @Composable
 fun OwnerJarImage(
     modifier: Modifier = Modifier,
     imageUri: Uri,
+    isClosed: Boolean
 ) {
     Card(
         modifier = modifier,
         shape = CircleShape,
         border = BorderStroke(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.primary
+            color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
         ),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -32,6 +34,7 @@ fun OwnerJarImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUri)
                 .crossfade(true)
+                .placeholder(R.drawable.image_placeholder)
                 .build(),
             contentDescription = "Зображення власника збору",
             contentScale = ContentScale.Crop

@@ -5,18 +5,18 @@
     <string name="no_internet">Не вдалося підключитися до сервера. Перевірте підключення до Інтернету</string>
     <string name="server_error">Щось пішло не так. Будь ласка спробуйте ще раз.</string>
     <string name="unknown_error">Сталася невідома помилка</string>
-    <string name="wrong_id_error">Збір не знайдений. Перевірте, будь ласка, ваше посилання</string>
-    <string name="empty_link_error">Додайте, будь ласка, посилання на збір</string>
-    <string name="add_new_jar">Додати новий збір</string>
-    <string name="link_to_jar">Посилання на збір</string>
+    <string name="wrong_id_error">Банка не знайдена. Перевірте, будь ласка, ваше посилання</string>
+    <string name="empty_link_error">Додайте, будь ласка, посилання на банку</string>
+    <string name="add_new_jar">Додати нову банку</string>
+    <string name="link_to_jar">Посилання на банку</string>
     <string name="your_comment">Ваш коментар (опціонально)</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
-    <string name="wait_adding_collection">Зачекайте, додаємо збір до вашого списку</string>
-    <string name="collection_successfully_added">Збір успішно доданий</string>
+    <string name="wait_adding_collection">Зачекайте, додаємо банку до вашого списку</string>
+    <string name="collection_successfully_added">Банка успішно доданий</string>
     <string name="jar_link">https://send.monobank.ua/jar/%1$s</string>
-    <string name="jar_details">Деталі збору</string>
-    <string name="copy_jar_link">Копіювати посилання на збір</string>
+    <string name="jar_details">Деталі банки</string>
+    <string name="copy_jar_link">Копіювати посилання на банку</string>
 
     <string name="jar_comment_edit">Редагувати</string>
     <string name="jar_comment_add">Додати</string>
@@ -36,11 +36,12 @@
 
     <string name="jar_no_goal">Без цілі</string>
     <string name="search">Пошук</string>
-    <string name="jar_search">Пошук зборів</string>
+    <string name="jar_search">Пошук банок</string>
     <string name="clear_search_field">Очистити поле пошуку</string>
-    <string name="jars_refreshed">Інформація по зборам оновлена</string>
-    <string name="jars_not_founded">За вашим запитом зборів не знайдено</string>
-    <string name="empty_jar_list">Список зборів порожній</string>
-    <string name="add_new_link">Додайте посилання на новий збір</string>
+    <string name="jars_refreshed">Інформація по банкам оновлена</string>
+    <string name="jars_not_founded">За вашим запитом банок не знайдено</string>
+    <string name="empty_jar_list">Список банок порожній</string>
+    <string name="add_new_link">Додайте посилання на нову банку</string>
+    <string name="jars_tracker">Трекер банок</string>
 
 </resources>

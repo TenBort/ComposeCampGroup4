@@ -7,9 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.outlined.FileCopy
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +34,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +50,7 @@ fun Jar(
     jar: Jar,
     modifier: Modifier = Modifier,
     onCopyClick: (String) -> Unit,
+    onJarClick: (String) -> Unit,
     onFavoriteClick: (Jar) -> Unit,
     onDonateClick: (Jar) -> Unit
 ) {
@@ -54,11 +62,16 @@ fun Jar(
 
     Card(
         modifier = modifier
-            .background(
-                MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                shape = RoundedCornerShape(16.dp)
-            ),
-        shape = RoundedCornerShape(16.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onJarClick(jar.jarId)
+            },
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+        )
     ) {
         JarInfo(jar = jar, Modifier.fillMaxWidth(), onFavoriteClick, onCopyClick)
 
@@ -89,68 +102,73 @@ fun JarInfo(
 
         OwnerJarImage(
             modifier = Modifier
-                .padding(start = 16.dp, top = 16.dp)
+                .padding(start = 16.dp)
                 .size(70.dp)
                 .align(Alignment.CenterVertically),
-            imageUri = Uri.parse(jar.ownerIcon)
+            imageUri = Uri.parse(jar.ownerIcon),
+            isClosed = jar.closed
         )
 
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 12.dp, top = 16.dp),
+                .padding(start = 12.dp, top = 16.dp, end = 12.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = jar.ownerName + " " + stringResource(id = R.string.jar_owner_additions),
+                text = jar.ownerName,
                 modifier = Modifier.wrapContentSize(),
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                lineHeight = 18.sp
             )
             Text(
-                text = jar.description,
+                text = jar.title,
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(top = 4.dp),
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                lineHeight = 18.sp
             )
 
-
-            Row(Modifier.padding(top = 16.dp)) {
+            Row(Modifier.padding(vertical = 12.dp)) {
                 Text(
                     text = if (isClosed) stringResource(id = R.string.jar_closed) else stringResource(
                         id = R.string.jar_active
                     ),
-                    color = if (isClosed) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.onBackground,
+                    color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onBackground,
                     fontSize = 10.sp,
                     modifier = Modifier
                         .background(
                             if (isClosed) {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                MaterialTheme.colorScheme.surfaceVariant
                             } else {
-                                MaterialTheme.colorScheme.onPrimary
+                                MaterialTheme.colorScheme.background
                             },
                             shape = RoundedCornerShape(16.dp)
                         )
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                        .padding(horizontal = 12.dp)
                 )
 
                 if (jar.goal == 0L) {
+                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = stringResource(id = R.string.jar_no_goal),
                         modifier = Modifier
-                            .padding(start = 12.dp)
                             .background(
-                                MaterialTheme.colorScheme.onPrimary,
+                                if (isClosed) {
+                                    MaterialTheme.colorScheme.surfaceVariant
+                                } else {
+                                    MaterialTheme.colorScheme.background
+                                },
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .padding(horizontal = 12.dp)
                     )
                 }
-
             }
         }
 
@@ -160,19 +178,18 @@ fun JarInfo(
             horizontalAlignment = Alignment.End
         ) {
             Icon(
-                painter = if (jar.isFavourite) painterResource(id = R.drawable.ic_star_solid) else painterResource(id = R.drawable.ic_star_border),
-                contentDescription = "copy Jar",
+                imageVector = if (jar.isFavourite) Icons.Default.Star else Icons.Default.StarOutline,
+                contentDescription = "favourite Jar",
                 modifier = Modifier
                     .clickable(
                         interactionSource = interactionSource, indication = null
                     ) {
                         onFavoriteClick.invoke(jar)
                     }
-                    .size(24.dp),
             )
 
             Icon(
-                painter = painterResource(id = R.drawable.ic_jar_copy),
+                imageVector = Icons.Outlined.FileCopy,
                 contentDescription = "copy Jar",
                 modifier = Modifier
                     .clickable(
@@ -181,7 +198,7 @@ fun JarInfo(
                         onCopyClick.invoke(jar.jarId)
                     }
                     .padding(top = 4.dp)
-                    .size(20.dp),
+                    .size(22.dp)
             )
         }
     }
@@ -253,8 +270,8 @@ fun ExpandableSection(
         Text(
             text = if (isExpanded) stringResource(id = R.string.hide_details) else stringResource(id = R.string.show_details),
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
-            fontSize = 12.sp,
-            color = if (isClosed) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
+            fontSize = 14.sp,
+            color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
         )
 
         AnimatedVisibility(
@@ -282,7 +299,6 @@ fun MoneyJarText(
             painter = painter,
             contentDescription = "icon",
             modifier = Modifier
-                .padding(end = 4.dp)
                 .size(20.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -294,7 +310,12 @@ fun MoneyJarText(
                 text = title,
                 modifier = Modifier,
                 fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.outline
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.outline,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    )
+                )
             )
             Text(
                 text = "$formattedAmount $currencySymbol",
@@ -317,7 +338,7 @@ fun RoundedButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 16.dp),
+            .padding(vertical = 16.dp, horizontal = 24.dp),
         shape = RoundedCornerShape(8.dp),
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
@@ -340,12 +361,12 @@ private fun JarProgressBar(
         LinearProgressIndicator(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .height(16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = 4.dp)
+                .height(8.dp),
             progress = { if (isClosed) 1f else progress },
             strokeCap = StrokeCap.Round,
-            trackColor = MaterialTheme.colorScheme.onPrimary,
-            color = if (isClosed) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.background,
+            color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -375,5 +396,5 @@ fun JarPreview() {
     Jar(jar = jar.value, Modifier.fillMaxWidth(), {}, {}, {
         val isClosed = jar.value.closed != jar.value.closed
         jar.value = jar.value.copy(closed = isClosed)
-    })
+    }, {})
 }
