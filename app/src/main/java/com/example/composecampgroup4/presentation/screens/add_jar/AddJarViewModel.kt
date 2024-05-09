@@ -32,6 +32,7 @@ class AddJarViewModel @Inject constructor(
             is AddJarUiEvent.CommentChanged -> updateComment(event.comment)
             is AddJarUiEvent.LinkChanged -> updateLink(event.link)
             AddJarUiEvent.SaveButtonClicked -> saveJar()
+            is AddJarUiEvent.ValidateBufferedText -> updateLinkFromBuffer(event.text)
         }
     }
 
@@ -63,6 +64,11 @@ class AddJarViewModel @Inject constructor(
     private fun updateComment(comment: String) = updateState { it.copy(comment = comment) }
 
     private fun updateLoadingState(isLoading: Boolean) = updateState { it.copy(isLoading = isLoading) }
+
+    private fun updateLinkFromBuffer(text: String) {
+        val result = jarLinkValidator.validateLink(text)
+        if (result is Result.Success) updateLink(text)
+    }
 
     private fun sendErrorMessage(errorMessage: UiText) {
         sendActionEvent(AddJarActionEvent.Error(errorMessage))

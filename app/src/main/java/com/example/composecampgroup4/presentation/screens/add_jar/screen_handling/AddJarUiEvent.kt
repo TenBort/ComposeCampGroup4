@@ -6,4 +6,5 @@ sealed interface AddJarUiEvent : UiEvent {
     data class LinkChanged(val link: String) : AddJarUiEvent
     data class CommentChanged(val comment: String) : AddJarUiEvent
     data object SaveButtonClicked : AddJarUiEvent
+    data class ValidateBufferedText(val text: String) : AddJarUiEvent
 }
