@@ -34,7 +34,7 @@ fun OwnerJarImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUri)
                 .crossfade(true)
-                .placeholder(R.drawable.image_placeholder)
+                .placeholder(R.mipmap.ic_launcher)
                 .build(),
             contentDescription = "Зображення власника збору",
             contentScale = ContentScale.Crop
