@@ -36,7 +36,12 @@ fun JarCashInfo(
     currency: Int,
     jarClosed: Boolean
 ) {
-    val progress = amount.toFloat() / goal.toFloat()
+    var progress = 1.0f
+
+    if (goal != 0L) {
+        progress = amount.toFloat() / goal.toFloat()
+    }
+
 
     Column(
         modifier = modifier

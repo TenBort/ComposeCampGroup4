@@ -37,7 +37,8 @@ fun OwnerJarImage(
                 .placeholder(R.drawable.image_placeholder)
                 .build(),
             contentDescription = "Зображення власника збору",
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            modifier = modifier
         )
     }
 }
