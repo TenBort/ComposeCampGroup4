@@ -43,5 +43,6 @@
     <string name="empty_jar_list">Список банок порожній</string>
     <string name="add_new_link">Додайте посилання на нову банку</string>
     <string name="jars_tracker">Трекер банок</string>
+    <string name="collected_by_owner_name">Збирає %1$s</string>
 
 </resources>
