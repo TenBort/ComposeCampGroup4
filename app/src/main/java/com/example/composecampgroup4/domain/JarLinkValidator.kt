@@ -12,7 +12,8 @@ class JarLinkValidator {
 
         val linkParts = link.split('/')
         return if (linkParts.size > 1) {
-            Result.Success(linkParts.last())
+            val jarIdIndex = linkParts.indexOf("jar") + 1
+            Result.Success(linkParts[jarIdIndex].substring(0, 10))
         } else {
             Result.Error(LinkError.WRONG_LINK)
         }
