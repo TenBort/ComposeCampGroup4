@@ -36,9 +36,9 @@ fun JarCashInfo(
     currency: Int,
     jarClosed: Boolean
 ) {
-    var progress:Float = 1.0f
+    var progress = 1.0f
 
-    if (goal != 0L){
+    if (goal != 0L) {
         progress = amount.toFloat() / goal.toFloat()
     }
 
