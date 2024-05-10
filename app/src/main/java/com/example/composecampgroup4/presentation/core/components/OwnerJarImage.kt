@@ -35,6 +35,7 @@ fun OwnerJarImage(
             modifier = Modifier.defaultMinSize(144.dp),
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUri)
+                .error(R.mipmap.ic_launcher)
                 .crossfade(true)
                 .placeholder(R.mipmap.ic_launcher)
                 .build(),

@@ -12,7 +12,8 @@ class JarLinkValidator {
 
         val linkParts = link.split('/')
 
-        return if (linkParts.size > 1) {
+
+        return if (linkParts.size > 1&&link.contains("jar")) {
             val jarIdIndex = linkParts.indexOf("jar") + 1
             val jarId = linkParts[jarIdIndex]
             val questionMarkIndex = jarId.indexOf("?")
