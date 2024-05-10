@@ -8,7 +8,7 @@
     <string name="wrong_id_error">Банка не знайдена. Перевірте, будь ласка, ваше посилання</string>
     <string name="empty_link_error">Додайте, будь ласка, посилання на банку</string>
     <string name="add_new_jar">Додати нову банку</string>
-    <string name="link_to_jar">Посилання на банку</string>
+    <string name="link_to_jar">Посилання</string>
     <string name="your_comment">Ваш коментар (опціонально)</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
@@ -44,5 +44,6 @@
     <string name="add_new_link">Додайте посилання на нову банку</string>
     <string name="jars_tracker">Трекер банок</string>
     <string name="collected_by_owner_name">Збирає %1$s</string>
+    <string name="add_link_message">Ваше посилання додане в поле введення</string>
 
 </resources>

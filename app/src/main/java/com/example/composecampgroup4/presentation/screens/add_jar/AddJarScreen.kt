@@ -52,8 +52,8 @@ fun AddJarScreenRoot(navigationState: NavigationState) {
                         navigationState.popBackStack()
                     }
 
-                    is AddJarActionEvent.Error -> snackbarHostState.showSnackbar(
-                        actionEvent.errorMessage.asString(context)
+                    is AddJarActionEvent.ShowMessage -> snackbarHostState.showSnackbar(
+                        actionEvent.message.asString(context)
                     )
                 }
             }
@@ -77,9 +77,10 @@ fun AddJarScreen(
     uiState: AddJarUiState,
     onEvent: (AddJarUiEvent) -> Unit,
 ) {
-    val bufferedText = LocalClipboardManager.current.getText()
+    val bufferedText = LocalClipboardManager.current.getText()?.text
+
     LaunchedEffect(bufferedText) {
-        bufferedText?.let { onEvent(AddJarUiEvent.ValidateBufferedText(it.text)) }
+        bufferedText?.let { onEvent(AddJarUiEvent.ValidateBufferedText(it)) }
     }
 
     Column(

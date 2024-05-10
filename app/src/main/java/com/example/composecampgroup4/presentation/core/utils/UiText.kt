@@ -10,7 +10,7 @@ sealed class UiText {
 
     class StringResource(
         @StringRes val id: Int,
-        val args: Array<Any> = arrayOf()
+        vararg val args: Any
     ) : UiText()
 
     @Composable

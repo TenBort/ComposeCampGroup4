@@ -6,5 +6,5 @@ import com.example.composecampgroup4.presentation.core.utils.UiText
 sealed interface AddJarActionEvent : ActionEvent {
     data object NavigateBack : AddJarActionEvent
 
-    data class Error(val errorMessage: UiText) : AddJarActionEvent
+    data class ShowMessage(val message: UiText) : AddJarActionEvent
 }
