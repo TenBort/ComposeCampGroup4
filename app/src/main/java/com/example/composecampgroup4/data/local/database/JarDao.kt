@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface JarDao {
 
-    @Query("SELECT * FROM jars ORDER BY isFavourite DESC, title ASC")
+    @Query("SELECT * FROM jars ORDER BY isFavourite DESC")
     fun getJars(): Flow<List<JarDbModel>>
 
     @Query("SELECT * FROM jars WHERE jarId=:jarId")
