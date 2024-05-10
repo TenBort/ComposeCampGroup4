@@ -47,7 +47,8 @@ fun MoneyJarInfo(
         MoneyJarText(
             painter = painterResource(id = R.drawable.ic_jar_amount),
             title = stringResource(id = R.string.jar_accumulated),
-            jar = jar,
+            currency = jar.currency,
+            money = jar.amount,
             fontSize = fontSize,
             iconSize = iconSize
         )
@@ -65,7 +66,8 @@ fun MoneyJarInfo(
             MoneyJarText(
                 painter = painterResource(id = R.drawable.ic_jar_goal),
                 title = stringResource(id = R.string.jar_goal),
-                jar = jar,
+                currency = jar.currency,
+                money = jar.goal,
                 fontSize = fontSize,
                 iconSize = iconSize
             )
@@ -78,7 +80,8 @@ private fun MoneyJarText(
     modifier: Modifier = Modifier,
     painter: Painter,
     title: String,
-    jar: Jar,
+    currency: Int,
+    money: Long,
     fontSize: TextUnit = TextUnit.Unspecified,
     iconSize: Dp
 ) {
@@ -96,8 +99,8 @@ private fun MoneyJarText(
         Spacer(modifier = Modifier.width(8.dp))
 
         Column {
-            val currencySymbol = getCurrencySymbol(jar.currency)
-            val formattedAmount = String.format(Locale.getDefault(),"%,.2f", jar.amount / 100.0)
+            val currencySymbol = getCurrencySymbol(currency)
+            val formattedAmount = String.format(Locale.getDefault(),"%,.2f", money / 100.0)
 
             // TitleText
             Text(
