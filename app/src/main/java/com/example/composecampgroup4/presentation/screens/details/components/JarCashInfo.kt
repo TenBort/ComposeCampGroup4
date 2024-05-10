@@ -22,11 +22,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composecampgroup4.R
 import java.util.Currency
+import java.util.Locale
 
 @Composable
 fun JarCashInfo(
@@ -46,7 +49,7 @@ fun JarCashInfo(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 44.dp, bottom = 52.dp),
+            .padding(top = 28.dp, bottom = 36.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -87,7 +90,7 @@ fun JarCashInfo(
             else MaterialTheme.colorScheme.primary,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 12.dp)
                 .height(8.dp)
         )
     }
@@ -115,16 +118,27 @@ private fun JarCashBox(
         Spacer(modifier = Modifier.width(12.dp))
         Column {
             val currencySymbol = getCurrencySymbol(currency)
-            val formattedAmount = String.format("%,.2f", amount / 100.0)
+            val formattedAmount = String.format(Locale.getDefault(),"%,.2f", amount / 100.0)
             Text(
                 text = title,
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.outline,
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.outline,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    )
+                )
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "$formattedAmount $currencySymbol",
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground,
+                style = TextStyle(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    )
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

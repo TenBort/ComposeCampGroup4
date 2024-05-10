@@ -11,9 +11,17 @@ class JarLinkValidator {
         if (link.isBlank()) return Result.Error(LinkError.EMPTY_LINK)
 
         val linkParts = link.split('/')
+
         return if (linkParts.size > 1) {
             val jarIdIndex = linkParts.indexOf("jar") + 1
-            Result.Success(linkParts[jarIdIndex].substring(0, 10))
+            val jarId = linkParts[jarIdIndex]
+            val questionMarkIndex = jarId.indexOf("?")
+
+            if (questionMarkIndex != -1) {
+                Result.Success(jarId.substring(0, questionMarkIndex))
+            } else {
+                Result.Success(jarId)
+            }
         } else {
             Result.Error(LinkError.WRONG_LINK)
         }

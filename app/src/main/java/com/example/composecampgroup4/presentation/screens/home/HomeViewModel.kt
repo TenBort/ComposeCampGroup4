@@ -76,6 +76,7 @@ class HomeViewModel @Inject constructor(
 
                     is Result.Success -> {
                         val loadedJar = copyFavouriteState(result.data)
+                        jarDatabaseRepository.upsertJar(loadedJar)
                         updatedJars.add(loadedJar)
                     }
                 }

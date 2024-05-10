@@ -13,9 +13,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,8 +52,8 @@ fun AddJarScreenRoot(navigationState: NavigationState) {
                         navigationState.popBackStack()
                     }
 
-                    is AddJarActionEvent.Error -> snackbarHostState.showSnackbar(
-                        actionEvent.errorMessage.asString(context)
+                    is AddJarActionEvent.ShowMessage -> snackbarHostState.showSnackbar(
+                        actionEvent.message.asString(context)
                     )
                 }
             }
@@ -75,8 +77,15 @@ fun AddJarScreen(
     uiState: AddJarUiState,
     onEvent: (AddJarUiEvent) -> Unit,
 ) {
+    val bufferedText = LocalClipboardManager.current.getText()?.text
+
+    LaunchedEffect(bufferedText) {
+        bufferedText?.let { onEvent(AddJarUiEvent.ValidateBufferedText(it)) }
+    }
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp)
             .padding(bottom = 16.dp),
         verticalArrangement = Arrangement.Center,

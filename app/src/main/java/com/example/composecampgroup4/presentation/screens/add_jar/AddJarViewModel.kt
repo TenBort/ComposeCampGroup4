@@ -1,6 +1,7 @@
 package com.example.composecampgroup4.presentation.screens.add_jar
 
 import androidx.compose.runtime.Stable
+import com.example.composecampgroup4.R
 import com.example.composecampgroup4.data.repository.JarDatabaseRepositoryImpl
 import com.example.composecampgroup4.data.repository.JarNetworkRepositoryImpl
 import com.example.composecampgroup4.domain.JarLinkValidator
@@ -14,7 +15,8 @@ import com.example.composecampgroup4.presentation.screens.add_jar.screen_handlin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-typealias  BaseAddJarViewModel = BaseViewModel<AddJarUiState, AddJarUiEvent, AddJarActionEvent>
+typealias BaseAddJarViewModel = BaseViewModel<AddJarUiState, AddJarUiEvent, AddJarActionEvent>
+
 @Stable
 @HiltViewModel
 class AddJarViewModel @Inject constructor(
@@ -32,12 +34,13 @@ class AddJarViewModel @Inject constructor(
             is AddJarUiEvent.CommentChanged -> updateComment(event.comment)
             is AddJarUiEvent.LinkChanged -> updateLink(event.link)
             AddJarUiEvent.SaveButtonClicked -> saveJar()
+            is AddJarUiEvent.ValidateBufferedText -> updateLinkFromBuffer(event.text)
         }
     }
 
     private fun saveJar() {
         when (val result = jarLinkValidator.validateLink(currentState.link)) {
-            is Result.Error -> sendErrorMessage(result.error.asUiText())
+            is Result.Error -> sendMessage(result.error.asUiText())
             is Result.Success -> upsertJar(result.data)
         }
     }
@@ -48,8 +51,9 @@ class AddJarViewModel @Inject constructor(
             when (val result = jarNetworkRepository.loadJarData(jarId)) {
                 is Result.Error -> {
                     updateLoadingState(false)
-                    sendErrorMessage(result.error.asUiText())
+                    sendMessage(result.error.asUiText())
                 }
+
                 is Result.Success -> {
                     jarDatabaseRepository.upsertJar(result.data)
                     sendActionEvent(AddJarActionEvent.NavigateBack)
@@ -62,9 +66,18 @@ class AddJarViewModel @Inject constructor(
 
     private fun updateComment(comment: String) = updateState { it.copy(comment = comment) }
 
-    private fun updateLoadingState(isLoading: Boolean) = updateState { it.copy(isLoading = isLoading) }
+    private fun updateLoadingState(isLoading: Boolean) =
+        updateState { it.copy(isLoading = isLoading) }
 
-    private fun sendErrorMessage(errorMessage: UiText) {
-        sendActionEvent(AddJarActionEvent.Error(errorMessage))
+    private fun updateLinkFromBuffer(text: String) {
+        val result = jarLinkValidator.validateLink(text)
+        if (result is Result.Success) {
+            updateLink(text)
+            sendMessage(UiText.StringResource(R.string.add_link_message))
+        }
+    }
+
+    private fun sendMessage(message: UiText) {
+        sendActionEvent(AddJarActionEvent.ShowMessage(message))
     }
 }

@@ -2,6 +2,12 @@ package com.example.composecampgroup4.presentation.screens.home.components
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -44,6 +50,7 @@ import com.example.composecampgroup4.R
 import com.example.composecampgroup4.domain.entity.Jar
 import com.example.composecampgroup4.presentation.core.components.OwnerJarImage
 import com.example.composecampgroup4.presentation.core.utils.getCurrencySymbol
+import java.util.Locale
 
 @Composable
 fun Jar(
@@ -79,8 +86,7 @@ fun Jar(
 
         ExpandableSection(
             modifier = Modifier.fillMaxWidth(),
-            isClosed = jar.closed,
-            isExpended = jar.isExpanded
+            isClosed = jar.closed
         ) {
             ExpendedJarContent(jar, Modifier, onDonateClick)
         }
@@ -116,22 +122,24 @@ fun JarInfo(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = jar.ownerName,
-                modifier = Modifier.wrapContentSize(),
+                text = jar.title,
+                modifier = Modifier
+                    .wrapContentSize(),
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                lineHeight = 20.sp
+            )
+            Text(
+                text = stringResource(R.string.collected_by_owner_name, jar.ownerName),
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 6.dp),
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 lineHeight = 18.sp
             )
-            Text(
-                text = jar.title,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(top = 4.dp),
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                lineHeight = 18.sp
-            )
+
 
             Row(Modifier.padding(vertical = 12.dp)) {
                 Text(
@@ -156,6 +164,7 @@ fun JarInfo(
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = stringResource(id = R.string.jar_no_goal),
+                        fontSize = 10.sp,
                         modifier = Modifier
                             .background(
                                 if (isClosed) {
@@ -253,10 +262,9 @@ fun ExpendedJarContent(
 fun ExpandableSection(
     modifier: Modifier = Modifier,
     isClosed: Boolean,
-    isExpended: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(isExpended) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
@@ -275,7 +283,19 @@ fun ExpandableSection(
 
         AnimatedVisibility(
             modifier = Modifier.fillMaxWidth(),
-            visible = isExpanded
+            visible = isExpanded,
+            enter = fadeIn() + expandVertically(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            ),
+            exit = fadeOut() + shrinkVertically(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
         ) {
             content()
         }
@@ -287,7 +307,7 @@ fun MoneyJarText(
     modifier: Modifier = Modifier, painter: Painter, title: String, amount: Long, currency: Int
 ) {
     val currencySymbol = getCurrencySymbol(currency)
-    val formattedAmount = String.format("%,.2f", amount / 100.0)
+    val formattedAmount = String.format(Locale.getDefault(), "%,.2f", amount / 100.0)
 
     Row(
         modifier = modifier,

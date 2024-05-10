@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,25 +40,27 @@ fun TitleJarInfo(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "$ownerName створив/ла збір",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Text(
                 text = title,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = modifier.padding(top = 8.dp),
                 textAlign = TextAlign.Center
             )
 
+            Text(
+                text = stringResource(R.string.collected_by_owner_name, ownerName),
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                modifier = modifier.padding(top = 4.dp),
+            )
+
             IsActiveStatus(
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = 8.dp),
                 jarClosed = jarClosed,
                 goal = goal
             )
+
 
             if (description.isNotEmpty()) {
                 Text(
@@ -84,6 +88,7 @@ private fun IsActiveStatus(
     ) {
         JarStatus(title = jarTitle, jarClosed = jarClosed)
         if (goal == 0L) {
+            Spacer(modifier = Modifier.width(12.dp))
             JarStatus(title = stringResource(R.string.jar_no_goal), jarClosed = jarClosed)
         }
     }
