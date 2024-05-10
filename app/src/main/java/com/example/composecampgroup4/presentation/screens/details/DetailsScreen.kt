@@ -1,6 +1,7 @@
 package com.example.composecampgroup4.presentation.screens.details
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -97,6 +98,8 @@ fun DetailsScreen(
 ) {
     var backgroundBoxTopOffset by remember { mutableIntStateOf(0) }
     val scrollState = rememberScrollState()
+
+    Log.d("DetailsScreen", backgroundBoxTopOffset.toString())
 
     //Background with rounded top-corners
     Box(modifier = Modifier
