@@ -12,9 +12,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun JarProgressBar(
     modifier: Modifier = Modifier,
-    progress: Float,
+    goal: Long,
+    amount: Long,
     isClosed: Boolean
 ) {
+    val progress = if (goal != 0L) amount / goal.toFloat() else 1f
+
     LinearProgressIndicator(
         modifier = modifier
             .fillMaxWidth()

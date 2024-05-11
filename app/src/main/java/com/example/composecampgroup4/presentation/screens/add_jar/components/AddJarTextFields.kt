@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -20,11 +19,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.composecampgroup4.R
+import com.example.composecampgroup4.presentation.core.components.CommentTextField
+import com.example.composecampgroup4.presentation.core.components.OutlinedTextFieldWithEndCursor
 import com.example.composecampgroup4.presentation.screens.add_jar.screen_handling.AddJarUiEvent
 import com.example.composecampgroup4.presentation.screens.add_jar.screen_handling.AddJarUiState
 
@@ -52,7 +51,7 @@ fun ColumnScope.AddJarTextFields(
             .focusRequester(focusRequester),
         value = uiState.link,
         focusManager = focusManager,
-        onEvent = onEvent
+        onValueChange = { onEvent(AddJarUiEvent.LinkChanged(it)) }
     )
 
     Spacer(modifier = Modifier.height(12.dp))
@@ -61,7 +60,7 @@ fun ColumnScope.AddJarTextFields(
         modifier = Modifier.fillMaxWidth(),
         value = uiState.comment,
         focusManager = focusManager,
-        onEvent = onEvent
+        onValueChange = { onEvent(AddJarUiEvent.CommentChanged(it)) }
     )
 }
 
@@ -70,37 +69,16 @@ private fun AddLinkTextField(
     modifier: Modifier = Modifier,
     value: String,
     focusManager: FocusManager,
-    onEvent: (AddJarUiEvent) -> Unit
+    onValueChange: (String) -> Unit
 ) {
-
-    OutlinedTextField(
+    OutlinedTextFieldWithEndCursor(
         modifier = modifier,
-        value = TextFieldValue(value, selection = TextRange(value.length)),
-        onValueChange = { onEvent(AddJarUiEvent.LinkChanged(it.text)) },
+        value = value,
+        onValueChange = onValueChange,
         placeholder = { Text(text = stringResource(R.string.link_to_jar)) },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = {
             focusManager.moveFocus(FocusDirection.Down)
-        })
-    )
-}
-
-@Composable
-private fun CommentTextField(
-    modifier: Modifier = Modifier,
-    value: String,
-    focusManager: FocusManager,
-    onEvent: (AddJarUiEvent) -> Unit
-) {
-    OutlinedTextField(
-        modifier = modifier,
-        value = value,
-        onValueChange = { onEvent(AddJarUiEvent.CommentChanged(it)) },
-        placeholder = { Text(text = stringResource(R.string.your_comment)) },
-        minLines = 3,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
         })
     )
 }

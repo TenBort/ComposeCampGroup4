@@ -27,7 +27,6 @@ fun JarItem(
     jar: Jar,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    val percentage = if (jar.goal == 0L) 1f else jar.amount / jar.goal.toFloat()
     val localUriHandler = LocalUriHandler.current
     val context = LocalContext.current
 
@@ -51,7 +50,8 @@ fun JarItem(
 
             JarProgressBar(
                 modifier = Modifier.padding(vertical = 16.dp),
-                progress = percentage,
+                goal = jar.goal,
+                amount = jar.amount,
                 isClosed = jar.closed
             )
 
