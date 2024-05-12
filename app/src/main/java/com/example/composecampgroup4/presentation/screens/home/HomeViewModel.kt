@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
             refreshJob.join()
             jarDatabaseRepository.getAllJars().collect { jarList ->
                 if (currentState.isSearching) searchJars(currentState.searchRequest)
-                updateJarList(jarList)
+                updateJarList(jarList.reversed())
             }
         }
     }
