@@ -10,11 +10,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -34,6 +36,11 @@ fun ColumnScope.AddJarTextFields(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    var focusDirection by remember { mutableStateOf(FocusDirection.Previous) }
+
+    LaunchedEffect(focusDirection) {
+        focusManager.moveFocus(focusDirection)
+    }
 
     LaunchedEffect(uiState.link != "") {
         focusRequester.requestFocus()
@@ -52,7 +59,7 @@ fun ColumnScope.AddJarTextFields(
             .fillMaxWidth()
             .focusRequester(focusRequester),
         value = uiState.link,
-        focusManager = focusManager,
+        moveFocus = { focusDirection = it },
         onValueChange = { onEvent(AddJarUiEvent.LinkChanged(it)) }
     )
 
@@ -61,7 +68,6 @@ fun ColumnScope.AddJarTextFields(
     CommentTextField(
         modifier = Modifier.fillMaxWidth(),
         value = uiState.comment,
-        focusManager = focusManager,
         onValueChange = { onEvent(AddJarUiEvent.CommentChanged(it)) }
     )
 }
@@ -70,7 +76,7 @@ fun ColumnScope.AddJarTextFields(
 private fun AddLinkTextField(
     modifier: Modifier = Modifier,
     value: String,
-    focusManager: FocusManager,
+    moveFocus: (FocusDirection) -> Unit,
     onValueChange: (String) -> Unit
 ) {
     OutlinedTextFieldWithEndCursor(
@@ -80,7 +86,7 @@ private fun AddLinkTextField(
         placeholder = { Text(text = stringResource(R.string.link_to_jar)) },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = {
-            focusManager.moveFocus(FocusDirection.Down)
+            moveFocus(FocusDirection.Down)
         })
     )
 }

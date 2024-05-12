@@ -162,7 +162,13 @@ fun DetailsScreen(
                 Spacer(modifier = Modifier.height(36.dp))
             }
 
-            Comment(uiState = uiState, onEvent = onEvent)
+            Comment(
+                commentEdited = uiState.commentEdited,
+                comment = uiState.comment,
+                isClosed = uiState.jar.closed,
+                editButtonTitle = uiState.editButtonState.title,
+                onEvent = onEvent
+            )
         }
     }
 }

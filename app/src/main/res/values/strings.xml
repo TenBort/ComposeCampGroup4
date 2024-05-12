@@ -46,5 +46,6 @@
     <string name="jars_tracker">Трекер банок</string>
     <string name="collected_by_owner_name">Збирає %1$s</string>
     <string name="add_link_message">Ваше посилання додане в поле введення</string>
+    <string name="enter_your_comment">Введіть ваш коментар</string>
 
 </resources>

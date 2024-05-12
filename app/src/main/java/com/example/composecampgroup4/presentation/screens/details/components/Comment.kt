@@ -20,32 +20,25 @@ import androidx.compose.ui.unit.sp
 import com.example.composecampgroup4.R
 import com.example.composecampgroup4.presentation.core.components.CommentTextField
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiEvent
-import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiState
-import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiState.EditButtonState.*
 
 @Composable
 fun Comment(
     modifier: Modifier = Modifier,
-    uiState: DetailsUiState,
+    commentEdited: Boolean,
+    comment: String,
+    isClosed: Boolean,
+    @StringRes editButtonTitle: Int,
     onEvent: (DetailsUiEvent) -> Unit,
 ) {
-    val comment = uiState.comment
-    val commentEdited = uiState.commentEdited
-    val title = when (val buttonState = uiState.editButtonState) {
-        Add -> buttonState.title
-        Edit -> buttonState.title
-        Save -> buttonState.title
-    }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = commentEdited) {
         if (commentEdited) focusRequester.requestFocus()
     }
-
     Column(modifier = modifier.fillMaxWidth()) {
         if (comment.isNotBlank() || commentEdited) {
             Text(
-                text = if (uiState.commentEdited) {
+                text = if (commentEdited) {
                     stringResource(id = R.string.your_comment, "")
                 } else {
                     stringResource(id = R.string.your_comment, comment)
@@ -57,16 +50,16 @@ fun Comment(
             CommentText(
                 modifier = Modifier.fillMaxWidth(),
                 comment = comment,
-                commentEdited = uiState.commentEdited,
+                commentEdited = commentEdited,
                 onValueChange = { onEvent(DetailsUiEvent.CommentsChanged(it)) },
                 focusRequester = focusRequester
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        if (!uiState.jar.closed) {
+        if (!isClosed) {
             EditCommentTextButton(
-                titleRes = title,
+                titleRes = editButtonTitle,
                 onClick = { onEvent(DetailsUiEvent.EditButtonClicked) }
             )
         }
@@ -87,7 +80,7 @@ private fun CommentText(
             modifier = modifier.focusRequester(focusRequester),
             value = comment,
             onValueChange = onValueChange,
-            placeholderValue = "Введіть ваш коментар"
+            placeholderValue = stringResource(R.string.enter_your_comment)
         )
     }
 }
