@@ -11,6 +11,7 @@
     <string name="link_to_jar">Посилання</string>
     <string name="your_comment_optional">Ваш коментар (опціонально)</string>
     <string name="your_comment">Ваш коментар: %1$s</string>
+    <string name="comment">Коментар: %1$s</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
     <string name="wait_adding_collection">Зачекайте, додаємо банку до вашого списку</string>
@@ -47,5 +48,7 @@
     <string name="collected_by_owner_name">Збирає %1$s</string>
     <string name="add_link_message">Ваше посилання додане в поле введення</string>
     <string name="enter_your_comment">Введіть ваш коментар</string>
+    <string name="add_favourite_jar">Додати банку в улюблені</string>
+    <string name="share_jar">Поділитися банкою</string>
 
 </resources>

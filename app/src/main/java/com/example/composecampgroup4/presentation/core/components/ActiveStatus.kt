@@ -34,7 +34,7 @@ fun ActiveStatus(
     ) {
         JarStatus(title = jarTitle, jarClosed = jarClosed, titleSize = titleSize)
         if (hasNoGoal) {
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             JarStatus(
                 title = stringResource(R.string.jar_no_goal),
                 jarClosed = jarClosed,

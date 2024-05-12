@@ -59,7 +59,8 @@ fun <T> SwipeToDeleteContainer(
             } else {
                 false
             }
-        }
+        },
+        positionalThreshold = { it / 3 }
     )
 
     LaunchedEffect(key1 = isRemoved) {

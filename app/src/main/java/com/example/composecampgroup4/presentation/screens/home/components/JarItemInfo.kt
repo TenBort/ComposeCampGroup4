@@ -26,7 +26,10 @@ fun JarItemInfo(
     jar: Jar,
     onFavoriteClick: (Jar) -> Unit,
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         OwnerJarImage(
             modifier = Modifier
                 .size(70.dp)
@@ -69,6 +72,10 @@ fun JarItemInfo(
             )
         }
 
-        JarItemIcons(jar = jar, onFavoriteClick = onFavoriteClick)
+        JarItemIcons(
+            modifier = Modifier.align(Alignment.Top),
+            jar = jar,
+            onFavoriteClick = onFavoriteClick
+        )
     }
 }

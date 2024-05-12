@@ -12,11 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composecampgroup4.R
 import com.example.composecampgroup4.domain.entity.Jar
 import com.example.composecampgroup4.presentation.core.components.JarProgressBar
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiEvent
@@ -27,9 +24,6 @@ fun JarItem(
     jar: Jar,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    val localUriHandler = LocalUriHandler.current
-    val context = LocalContext.current
-
     Card(
         modifier = modifier
             .clickable(
@@ -59,7 +53,6 @@ fun JarItem(
                 modifier = Modifier.fillMaxWidth(),
                 jar = jar,
                 isClosed = jar.closed,
-                onButtonClick = { localUriHandler.openUri(context.getString(R.string.jar_link, jar.jarId)) }
             )
         }
     }

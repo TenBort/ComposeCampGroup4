@@ -22,33 +22,32 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composecampgroup4.R
 import com.example.composecampgroup4.domain.entity.Jar
+import com.example.composecampgroup4.presentation.core.components.DonateButtonWithCopyIcon
 import com.example.composecampgroup4.presentation.core.components.MoneyJarInfo
-import com.example.composecampgroup4.presentation.core.components.PrimaryButton
 
 @Composable
 fun JarItemExpandableSection(
     modifier: Modifier = Modifier,
     jar: Jar,
     isClosed: Boolean,
-    onButtonClick: () -> Unit
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-    Column {
+    Column(modifier = modifier) {
 
         // ExpandTextButton
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = { isExpanded = !isExpanded }
-                )
-                .fillMaxWidth(),
+                ),
             text = if (isExpanded) stringResource(id = R.string.hide_details) else stringResource(id = R.string.show_details),
             fontSize = 14.sp,
             color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
@@ -72,16 +71,29 @@ fun JarItemExpandableSection(
         ) {
             Column(modifier) {
                 MoneyJarInfo(
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(top = 16.dp, bottom = 20.dp),
                     jar = jar,
                     fontSize = 12.sp,
                     iconSize = 20.dp
                 )
 
-                PrimaryButton(
-                    text = stringResource(id = R.string.jar_donate),
-                    isEnabled = !jar.closed,
-                    onClick = onButtonClick
+                if (jar.userComment.isNotBlank()) {
+                    Text(
+                        text = stringResource(R.string.comment, jar.userComment),
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.outline,
+                        lineHeight = 18.sp,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                DonateButtonWithCopyIcon(
+                    modifier = Modifier.fillMaxWidth(),
+                    jarId = jar.jarId,
+                    buttonHeight = 44.dp,
+                    isEnabled = !jar.closed
                 )
             }
         }
