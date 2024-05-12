@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -27,24 +29,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composecampgroup4.R
 import com.example.composecampgroup4.domain.entity.Jar
 import com.example.composecampgroup4.navigation.NavigationState
 import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
+import com.example.composecampgroup4.presentation.core.components.DonateButtonWithCopyIcon
+import com.example.composecampgroup4.presentation.core.components.JarProgressBar
+import com.example.composecampgroup4.presentation.core.components.MoneyJarInfo
 import com.example.composecampgroup4.presentation.core.components.OwnerJarImage
+import com.example.composecampgroup4.presentation.core.components.PrimaryButton
 import com.example.composecampgroup4.presentation.core.components.TopBarApp
 import com.example.composecampgroup4.presentation.screens.details.components.Comment
-import com.example.composecampgroup4.presentation.screens.details.components.DetailsBottomButton
-import com.example.composecampgroup4.presentation.screens.details.components.JarCashInfo
 import com.example.composecampgroup4.presentation.screens.details.components.TitleJarInfo
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiEvent
 import com.example.composecampgroup4.presentation.screens.details.screen_handling.DetailsUiState
@@ -56,9 +57,6 @@ fun DetailsScreenRoot(navigationState: NavigationState, jarId: String) {
         hiltViewModel<DetailsViewModel, DetailsViewModel.DetailsViewModelFactory> { factory ->
             factory.create(jarId)
         }
-    val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
-    val localUriHandler = LocalUriHandler.current
 
     BaseContentLayout(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)),
@@ -69,18 +67,22 @@ fun DetailsScreenRoot(navigationState: NavigationState, jarId: String) {
             )
         },
         bottomBar = { uiState ->
-            DetailsBottomButton(
-                modifier = Modifier.padding(start = 24.dp, end = 8.dp, bottom = 16.dp),
-                onButtonClick = {
-                    localUriHandler.openUri(context.getString(R.string.jar_link, uiState.jar.jarId))
-                },
-                onCopyClick = {
-                    clipboardManager.setText(
-                        AnnotatedString(context.getString(R.string.jar_link, uiState.jar.jarId))
-                    )
-                },
-                enabled = !uiState.jar.closed
-            )
+            if (uiState.commentEdited) {
+                PrimaryButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
+                        .height(50.dp),
+                    text = stringResource(id = R.string.jar_comment_save),
+                    onClick = { viewModel.onEvent(DetailsUiEvent.EditButtonClicked) }
+                )
+            } else {
+                DonateButtonWithCopyIcon(
+                    modifier = Modifier.padding(start = 24.dp, end = 8.dp, bottom = 16.dp),
+                    jarId = uiState.jar.jarId
+                )
+            }
+
         },
         viewModel = viewModel
     ) { uiState ->
@@ -113,7 +115,6 @@ fun DetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 24.dp, end = 24.dp, bottom = 16.dp),
-        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(48.dp))
@@ -133,7 +134,10 @@ fun DetailsScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Column(
-            modifier = Modifier.verticalScroll(state = scrollState)
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(state = scrollState),
+            verticalArrangement = if (uiState.commentEdited) Arrangement.Center else Arrangement.Top
         ) {
             if (!uiState.commentEdited) {
                 TitleJarInfo(
@@ -144,15 +148,27 @@ fun DetailsScreen(
                     goal = uiState.jar.goal
                 )
 
-                JarCashInfo(
-                    amount = uiState.jar.amount,
+                Spacer(modifier = Modifier.height(28.dp))
+
+                MoneyJarInfo(jar = uiState.jar, fontSize = 14.sp, iconSize = 24.dp)
+
+                JarProgressBar(
+                    modifier = Modifier.padding(top = 8.dp),
                     goal = uiState.jar.goal,
-                    currency = uiState.jar.currency,
-                    jarClosed = uiState.jar.closed
+                    amount = uiState.jar.amount,
+                    isClosed = uiState.jar.closed
                 )
+
+                Spacer(modifier = Modifier.height(36.dp))
             }
 
-            Comment(uiState = uiState, onEvent = onEvent)
+            Comment(
+                commentEdited = uiState.commentEdited,
+                comment = uiState.comment,
+                isClosed = uiState.jar.closed,
+                editButtonTitle = uiState.editButtonState.title,
+                onEvent = onEvent
+            )
         }
     }
 }

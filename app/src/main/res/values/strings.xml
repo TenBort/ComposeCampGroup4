@@ -9,7 +9,9 @@
     <string name="empty_link_error">Додайте, будь ласка, посилання на банку</string>
     <string name="add_new_jar">Додати нову банку</string>
     <string name="link_to_jar">Посилання</string>
-    <string name="your_comment">Ваш коментар (опціонально)</string>
+    <string name="your_comment_optional">Ваш коментар (опціонально)</string>
+    <string name="your_comment">Ваш коментар: %1$s</string>
+    <string name="comment">Коментар: %1$s</string>
     <string name="save">Зберегти</string>
     <string name="go_back">Повернутися назад</string>
     <string name="wait_adding_collection">Зачекайте, додаємо банку до вашого списку</string>
@@ -19,7 +21,7 @@
     <string name="copy_jar_link">Копіювати посилання на банку</string>
 
     <string name="jar_comment_edit">Редагувати</string>
-    <string name="jar_comment_add">Додати</string>
+    <string name="jar_comment_add">Додати коментар</string>
     <string name="jar_comment_save">Зберегти</string>
     <string name="jar_accumulated">Накопичено</string>
     <string name="jar_goal">Ціль</string>
@@ -45,5 +47,8 @@
     <string name="jars_tracker">Трекер банок</string>
     <string name="collected_by_owner_name">Збирає %1$s</string>
     <string name="add_link_message">Ваше посилання додане в поле введення</string>
+    <string name="enter_your_comment">Введіть ваш коментар</string>
+    <string name="add_favourite_jar">Додати банку в улюблені</string>
+    <string name="share_jar">Поділитися банкою</string>
 
 </resources>

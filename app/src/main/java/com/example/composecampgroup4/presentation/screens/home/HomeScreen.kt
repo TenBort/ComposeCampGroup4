@@ -16,11 +16,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,7 +27,7 @@ import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
 import com.example.composecampgroup4.presentation.core.components.PullToRefreshLazyColumn
 import com.example.composecampgroup4.presentation.core.components.TopBarApp
 import com.example.composecampgroup4.presentation.screens.home.components.EmptyHomeScreen
-import com.example.composecampgroup4.presentation.screens.home.components.Jar
+import com.example.composecampgroup4.presentation.screens.home.components.JarItem
 import com.example.composecampgroup4.presentation.screens.home.components.SearchTextField
 import com.example.composecampgroup4.presentation.screens.home.components.SwipeToDeleteContainer
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeActionEvent
@@ -55,7 +51,9 @@ fun HomeScreenRoot(
                         actionEvent.message.asString(context)
                     )
 
-                    is HomeActionEvent.NavigateToDetails -> navigationState.navigateToDetails(actionEvent.jarId)
+                    is HomeActionEvent.NavigateToDetails -> navigationState.navigateToDetails(
+                        actionEvent.jarId
+                    )
                 }
             }
         },
@@ -80,10 +78,6 @@ fun HomeScreen(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
-    val localUriHandler = LocalUriHandler.current
-
     if (uiState.jars.isEmpty() && !uiState.isSearching) {
         EmptyHomeScreen(isSearching = false)
     } else {
@@ -107,29 +101,9 @@ fun HomeScreen(
                     } else {
                         SwipeToDeleteContainer(
                             item = jar,
-                            onDelete = {
-                                onEvent(HomeUiEvent.DeleteJar(it.jarId))
-                            }
+                            onDelete = { onEvent(HomeUiEvent.DeleteJar(it.jarId)) }
                         ) {
-                            Jar(
-                                jar = it,
-                                onCopyClick = {
-                                    clipboardManager.setText(
-                                        AnnotatedString(context.getString(R.string.jar_link, jar.jarId))
-                                    )
-                                },
-                                onFavoriteClick = { jar ->
-                                    onEvent(HomeUiEvent.JarFavouriteChanged(jar))
-                                },
-                                onJarClick = { onEvent(HomeUiEvent.OnJarClicked(it)) }
-                                ) {
-                                localUriHandler.openUri(
-                                    context.getString(
-                                        R.string.jar_link,
-                                        jar.jarId
-                                    )
-                                )
-                            }
+                            JarItem(jar = jar, onEvent = onEvent)
                         }
                     }
                 }

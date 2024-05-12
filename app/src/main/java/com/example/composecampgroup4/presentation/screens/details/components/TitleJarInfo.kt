@@ -1,26 +1,21 @@
 package com.example.composecampgroup4.presentation.screens.details.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composecampgroup4.R
+import com.example.composecampgroup4.presentation.core.components.ActiveStatus
 
 @Composable
 fun TitleJarInfo(
@@ -55,12 +50,11 @@ fun TitleJarInfo(
                 modifier = modifier.padding(top = 4.dp),
             )
 
-            IsActiveStatus(
+            ActiveStatus(
                 modifier = Modifier.padding(top = 8.dp),
                 jarClosed = jarClosed,
-                goal = goal
+                hasNoGoal = goal == 0L
             )
-
 
             if (description.isNotEmpty()) {
                 Text(
@@ -71,58 +65,5 @@ fun TitleJarInfo(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun IsActiveStatus(
-    modifier: Modifier = Modifier,
-    jarClosed: Boolean,
-    goal: Long
-) {
-    val jarTitle =
-        if (jarClosed) stringResource(R.string.jar_closed) else stringResource(R.string.jar_active)
-
-    Row(
-        modifier = modifier
-    ) {
-        JarStatus(title = jarTitle, jarClosed = jarClosed)
-        if (goal == 0L) {
-            Spacer(modifier = Modifier.width(12.dp))
-            JarStatus(title = stringResource(R.string.jar_no_goal), jarClosed = jarClosed)
-        }
-    }
-}
-
-@Composable
-private fun JarStatus(
-    modifier: Modifier = Modifier,
-    title: String,
-    jarClosed: Boolean
-) {
-    val backgroundColor = if (jarClosed) {
-        MaterialTheme.colorScheme.surfaceVariant
-    } else {
-        MaterialTheme.colorScheme.background
-    }
-
-    val textColor = if (jarClosed) {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    } else {
-        MaterialTheme.colorScheme.onBackground
-    }
-
-    Box(
-        modifier = modifier
-            .clip(shape = RoundedCornerShape(50.dp))
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = title,
-            fontSize = 12.sp,
-            color = textColor,
-            modifier = Modifier.padding(horizontal = 12.dp)
-        )
     }
 }

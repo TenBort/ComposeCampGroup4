@@ -1,0 +1,30 @@
+package com.example.composecampgroup4.presentation.core.components
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun JarProgressBar(
+    modifier: Modifier = Modifier,
+    goal: Long,
+    amount: Long,
+    isClosed: Boolean
+) {
+    val progress = if (goal != 0L) amount / goal.toFloat() else 1f
+
+    LinearProgressIndicator(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(8.dp),
+        progress = { if (isClosed) 1f else progress },
+        strokeCap = StrokeCap.Round,
+        trackColor = MaterialTheme.colorScheme.background,
+        color = if (isClosed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary,
+    )
+}

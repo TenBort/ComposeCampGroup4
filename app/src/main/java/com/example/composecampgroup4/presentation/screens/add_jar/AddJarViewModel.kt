@@ -71,7 +71,7 @@ class AddJarViewModel @Inject constructor(
 
     private fun updateLinkFromBuffer(text: String) {
         val result = jarLinkValidator.validateLink(text)
-        if (result is Result.Success) {
+        if (result is Result.Success && currentState.link != "https://send.monobank.ua/jar/${result.data}") {
             updateLink(text)
             sendMessage(UiText.StringResource(R.string.add_link_message))
         }

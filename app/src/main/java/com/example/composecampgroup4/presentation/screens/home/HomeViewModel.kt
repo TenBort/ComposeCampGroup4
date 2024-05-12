@@ -32,11 +32,11 @@ class HomeViewModel @Inject constructor(
 
     init {
         launch {
+            val refreshJob = refreshJarsJob()
+            refreshJob.join()
             jarDatabaseRepository.getAllJars().collect { jarList ->
-                if (currentState.isSearching) {
-                    searchJar(currentState.searchRequest)
-                }
-                updateJarList(jarList)
+                if (currentState.isSearching) searchJars(currentState.searchRequest)
+                updateJarList(jarList.reversed())
             }
         }
     }
@@ -48,20 +48,20 @@ class HomeViewModel @Inject constructor(
             is HomeUiEvent.DeleteJar -> deleteJar(event.jarId)
             is HomeUiEvent.OnJarClicked -> sendActionEvent(HomeActionEvent.NavigateToDetails(event.jarId))
             HomeUiEvent.PulledToRefresh -> refreshWithPullJarList()
-            HomeUiEvent.RefreshIconClicked -> launch { getRefreshedJob() }
+            HomeUiEvent.RefreshIconClicked -> launch { refreshJarsJob() }
         }
     }
 
     private fun refreshWithPullJarList() {
         launch {
             updateRefreshState(true)
-            val refreshJob = getRefreshedJob()
+            val refreshJob = refreshJarsJob()
             refreshJob.join()
             updateRefreshState(false)
         }
     }
 
-    private suspend fun getRefreshedJob(): Job {
+    private suspend fun refreshJarsJob(): Job {
         return launch {
             val loadedResult = jarsLoadResult()
             val updatedJars = mutableListOf<Jar>()
@@ -106,9 +106,9 @@ class HomeViewModel @Inject constructor(
         return jarsDeferred.awaitAll()
     }
 
-    private fun searchJar(searchRequest: String) {
+    private fun searchJars(searchRequest: String) {
         launch {
-            val foundJars = jarDatabaseRepository.searchJar(searchRequest)
+            val foundJars = jarDatabaseRepository.searchJars(searchRequest)
             updateJarList(foundJars)
         }
     }
@@ -131,7 +131,7 @@ class HomeViewModel @Inject constructor(
     private fun updateSearchRequest(searchRequest: String) {
         updateSearchState(searchRequest.isNotBlank())
         updateState { it.copy(searchRequest = searchRequest) }
-        searchJar(searchRequest)
+        searchJars(searchRequest)
     }
 
     private fun updateSearchState(isSearching: Boolean) =
