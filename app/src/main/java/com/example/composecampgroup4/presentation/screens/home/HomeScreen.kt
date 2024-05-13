@@ -1,9 +1,7 @@
 package com.example.composecampgroup4.presentation.screens.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
@@ -14,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,9 +26,7 @@ import com.example.composecampgroup4.presentation.core.base.BaseContentLayout
 import com.example.composecampgroup4.presentation.core.components.PullToRefreshLazyColumn
 import com.example.composecampgroup4.presentation.core.components.TopBarApp
 import com.example.composecampgroup4.presentation.screens.home.components.EmptyHomeScreen
-import com.example.composecampgroup4.presentation.screens.home.components.JarItem
-import com.example.composecampgroup4.presentation.screens.home.components.SearchTextField
-import com.example.composecampgroup4.presentation.screens.home.components.SwipeToDeleteContainer
+import com.example.composecampgroup4.presentation.screens.home.components.jarItemsList
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeActionEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiState
@@ -71,42 +68,37 @@ fun HomeScreenRoot(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
-    if (uiState.jars.isEmpty() && !uiState.isSearching) {
-        EmptyHomeScreen(isSearching = false)
-    } else {
-        Column(modifier = modifier) {
+    LaunchedEffect(uiState.isInitJarLoaded) {
+        if (uiState.isInitJarLoaded) onEvent(HomeUiEvent.InitRefreshJars)
+    }
+
+    when (uiState.contentState) {
+        HomeUiState.ContentState.Loading -> {
+            EmptyHomeScreen(modifier = modifier, isLoading = true)
+        }
+
+        HomeUiState.ContentState.EmptyJars -> {
+            EmptyHomeScreen(modifier = modifier, isSearching = false)
+        }
+
+        is HomeUiState.ContentState.ShowJars -> {
             PullToRefreshLazyColumn(
+                modifier = modifier.fillMaxSize(),
                 isRefreshing = uiState.isRefreshing,
-                onRefresh = { onEvent(HomeUiEvent.PulledToRefresh) }
+                onRefresh = { onEvent(HomeUiEvent.RefreshJars) }
             ) {
-                stickyHeader {
-                    SearchTextField(
-                        searchRequest = uiState.searchRequest,
-                        onEvent = onEvent
-                    )
-                }
-
-                items(items = uiState.jars, key = { it.jarId }) { jar ->
-
-                    // If the search does not find anything, it displays an empty screen with a message that no jars were found
-                    if (uiState.jars.isEmpty() && uiState.isSearching) {
-                        EmptyHomeScreen(isSearching = true)
-                    } else {
-                        SwipeToDeleteContainer(
-                            item = jar,
-                            onDelete = { onEvent(HomeUiEvent.DeleteJar(it.jarId)) }
-                        ) {
-                            JarItem(jar = jar, onEvent = onEvent)
-                        }
-                    }
-                }
+                jarItemsList(
+                    jars = uiState.jars,
+                    searchRequest = uiState.searchRequest,
+                    isJarsFound = uiState.isJarsFound,
+                    onEvent = onEvent
+                )
             }
         }
     }
@@ -119,7 +111,7 @@ private fun HomeTopBar(
     TopBarApp(
         title = stringResource(R.string.jars_tracker),
         actions = {
-            IconButton(onClick = { onEvent(HomeUiEvent.RefreshIconClicked) }) {
+            IconButton(onClick = { onEvent(HomeUiEvent.RefreshJars) }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Оновити стан зборів",
