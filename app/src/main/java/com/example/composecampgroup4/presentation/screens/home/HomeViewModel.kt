@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
     init {
         launch {
             jarDatabaseRepository.getAllJars().collect { jarList ->
-                if (!currentState.isInitJarLoaded) {
+                if (!currentState.isRefreshing) {
                     if (jarList.isEmpty()) setContentState(jarList)
                     updateJarList(jarList)
                 }
