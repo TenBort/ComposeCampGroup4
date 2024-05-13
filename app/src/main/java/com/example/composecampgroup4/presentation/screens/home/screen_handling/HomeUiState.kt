@@ -9,5 +9,18 @@ data class HomeUiState(
     val searchRequest: String = "",
     val isSearching: Boolean = false,
     val isRefreshing: Boolean = false,
+    val isJarsFound: Boolean = false,
+    val contentState: ContentState = ContentState.Loading
 
-) : UiState
+) : UiState {
+
+    val isInitJarLoaded: Boolean = (!isSearching && jars.isNotEmpty())
+
+    sealed interface ContentState {
+        data object Loading : ContentState
+
+        data object EmptyJars : ContentState
+
+        data object ShowJars : ContentState
+    }
+}

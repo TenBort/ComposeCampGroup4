@@ -10,9 +10,9 @@ sealed interface HomeUiEvent : UiEvent {
 
     data class DeleteJar(val jarId: String) : HomeUiEvent
 
-    data object PulledToRefresh : HomeUiEvent
+    data object RefreshJars : HomeUiEvent
 
-    data object RefreshIconClicked : HomeUiEvent
+    data object InitRefreshJars : HomeUiEvent
 
     data class OnJarClicked(val jarId: String) : HomeUiEvent
 }

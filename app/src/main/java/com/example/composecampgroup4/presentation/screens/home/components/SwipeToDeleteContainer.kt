@@ -70,6 +70,24 @@ fun <T> SwipeToDeleteContainer(
         }
     }
 
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismissBox(
+            state = state,
+            backgroundContent = {
+                DeleteBackground(swipeDismissState = state)
+            },
+            enableDismissFromEndToStart = true,
+            enableDismissFromStartToEnd = false,
+            content = { content(item) },
+        )
+    }
+
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -100,24 +118,6 @@ fun <T> SwipeToDeleteContainer(
                     Text(text = stringResource(id = R.string.jar_delete_cancel))
                 }
             }
-        )
-    }
-
-    AnimatedVisibility(
-        visible = !isRemoved,
-        exit = shrinkVertically(
-            animationSpec = tween(durationMillis = animationDuration),
-            shrinkTowards = Alignment.Top
-        ) + fadeOut()
-    ) {
-        SwipeToDismissBox(
-            state = state,
-            backgroundContent = {
-                DeleteBackground(swipeDismissState = state)
-            },
-            enableDismissFromEndToStart = true,
-            enableDismissFromStartToEnd = false,
-            content = { content(item) },
         )
     }
 }

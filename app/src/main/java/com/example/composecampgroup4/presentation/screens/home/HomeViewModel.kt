@@ -13,6 +13,7 @@ import com.example.composecampgroup4.presentation.core.utils.asUiText
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeActionEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiEvent
 import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiState
+import com.example.composecampgroup4.presentation.screens.home.screen_handling.HomeUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
@@ -32,11 +33,11 @@ class HomeViewModel @Inject constructor(
 
     init {
         launch {
-            val refreshJob = refreshJarsJob()
-            refreshJob.join()
             jarDatabaseRepository.getAllJars().collect { jarList ->
-                if (currentState.isSearching) searchJars(currentState.searchRequest)
-                updateJarList(jarList)
+                if (!currentState.isInitJarLoaded) {
+                    if (jarList.isEmpty()) setContentState(jarList)
+                    updateJarList(jarList)
+                }
             }
         }
     }
@@ -47,12 +48,20 @@ class HomeViewModel @Inject constructor(
             is HomeUiEvent.SearchChanged -> updateSearchRequest(event.search)
             is HomeUiEvent.DeleteJar -> deleteJar(event.jarId)
             is HomeUiEvent.OnJarClicked -> sendActionEvent(HomeActionEvent.NavigateToDetails(event.jarId))
-            HomeUiEvent.PulledToRefresh -> refreshWithPullJarList()
-            HomeUiEvent.RefreshIconClicked -> launch { refreshJarsJob() }
+            HomeUiEvent.RefreshJars -> refreshJarList()
+            HomeUiEvent.InitRefreshJars -> initRefreshJarList()
         }
     }
 
-    private fun refreshWithPullJarList() {
+    private fun initRefreshJarList() {
+        launch {
+            val refreshJob = refreshJarsJob()
+            refreshJob.join()
+            setContentState(currentState.jars)
+        }
+    }
+
+    private fun refreshJarList() {
         launch {
             updateRefreshState(true)
             val refreshJob = refreshJarsJob()
@@ -84,7 +93,9 @@ class HomeViewModel @Inject constructor(
 
             if (!isError) {
                 updateJarList(updatedJars)
-                sendMessage(UiText.StringResource(R.string.jars_refreshed))
+                if (currentState.isRefreshing) {
+                    sendMessage(UiText.StringResource(R.string.jars_refreshed))
+                }
             }
         }
     }
@@ -106,12 +117,26 @@ class HomeViewModel @Inject constructor(
         return jarsDeferred.awaitAll()
     }
 
+    private fun setContentState(jarList: List<Jar>) {
+        if (jarList.isEmpty() && !currentState.isSearching) {
+            updateJarsFoundingState(isJarsFound = false)
+            updateContentState(ContentState.EmptyJars)
+        } else {
+            updateJarsFoundingState(isJarsFound = jarList.isNotEmpty())
+            updateContentState(ContentState.ShowJars)
+        }
+    }
+
     private fun searchJars(searchRequest: String) {
         launch {
             val foundJars = jarDatabaseRepository.searchJars(searchRequest)
             updateJarList(foundJars)
+            setContentState(foundJars)
         }
     }
+
+    private fun updateJarsFoundingState(isJarsFound: Boolean) =
+        updateState { it.copy(isJarsFound = isJarsFound) }
 
     private fun deleteJar(jarId: String) {
         launch {
@@ -147,6 +172,9 @@ class HomeViewModel @Inject constructor(
             jarDatabaseRepository.upsertJar(updateJar)
         }
     }
+
+    private fun updateContentState(contentState: ContentState) =
+        updateState { it.copy(contentState = contentState) }
 
     private fun sendMessage(message: UiText) {
         sendActionEvent(HomeActionEvent.ShowMessage(message))
